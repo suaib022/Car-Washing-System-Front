@@ -1,9 +1,11 @@
-function App() {
+import MainLayout from "./components/layout/MainLayout";
+
+const App = () => {
   return (
     <>
-      <h1>EchoWash</h1>
+      <MainLayout />
     </>
   );
-}
+};
 
 export default App;
