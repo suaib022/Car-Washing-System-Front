@@ -1,11 +1,11 @@
 import { Button, Row } from "antd";
+import signUpImg from "../../assets/images/form/signUp.png";
 import UseForm from "../../components/form/Form";
 import FormInput from "../../components/form/Input";
-import loginImg from "../../assets/images/form/login.png";
 import { FieldValues } from "react-hook-form";
 import { NavLink } from "react-router-dom";
 
-const Login = () => {
+const SignUp = () => {
   const onSubmit = async (data: FieldValues) => {
     const { email, password } = data;
 
@@ -13,19 +13,20 @@ const Login = () => {
   };
   return (
     <div className="md:flex">
-      <img className="hidden md:block md:w-1/2" src={loginImg} alt="" />
+      <img className="hidden md:block md:w-1/2" src={signUpImg} alt="" />
       <div className="md:w-1/2 shadow-xl py-8 rounded-3xl">
         <h2 className="text-3xl text-start font-semibold ml-8 mb-6 underline text-orange-700">
-          Login Now{" "}
+          SignUp Now{" "}
         </h2>
-        <Row
-          className="flex flex-col h-4/5"
-          justify="center"
-          align="middle"
-          style={{}}
-        >
+        <div className="flex flex-col h-4/5 mx-auto  items-center">
           <UseForm onSubmit={onSubmit}>
-            <div className="space-y-8  flex flex-col font-semibold">
+            <div className="space-y-8 flex flex-col font-semibold">
+              <FormInput
+                required={true}
+                type="text"
+                name="name"
+                label="Name :"
+              ></FormInput>
               <FormInput
                 required={true}
                 type="email"
@@ -37,6 +38,18 @@ const Login = () => {
                 type="password"
                 name="password"
                 label="Password :"
+              ></FormInput>
+              <FormInput
+                required={true}
+                type="number"
+                name="phone"
+                label="Contact Number :"
+              ></FormInput>
+              <FormInput
+                required={true}
+                type="textarea"
+                name="address"
+                label="Address :"
               ></FormInput>
               <Button
                 style={{
@@ -50,21 +63,21 @@ const Login = () => {
                 htmlType="submit"
                 className=""
               >
-                login
+                Sign Up
               </Button>
             </div>
           </UseForm>
 
-          <div className="mt-4 flex justify-evenly items-center w-1/2">
-            <h2>Don't Have An Account?</h2>
-            <h2 className="underline">
-              <NavLink to={"/signUp"}>Register</NavLink>
+          <div className="mt-4 flex justify-evenly  w-3/4 items-center">
+            <h2>Already Have An Account?</h2>
+            <h2 className="underline hover:text-sky-300">
+              <NavLink to={"/login"}>LogIn</NavLink>
             </h2>
           </div>
-        </Row>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;

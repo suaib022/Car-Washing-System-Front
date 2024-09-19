@@ -7,7 +7,12 @@ const Navbar = () => {
     <>
       <div className="navbar max-w-screen-xl mx-auto fixed top-0 left-0 right-0 backdrop-blur-md shadow-lg z-50 h-16">
         <div className="navbar-start">
-          <img src={logo} style={{ width: 160 }} alt="" />
+          <img
+            onClick={() => navigate("/")}
+            src={logo}
+            style={{ width: 160 }}
+            alt=""
+          />
         </div>
         <div className="navbar-end hidden md:flex  w-full   justify-end space-x-2">
           <button
