@@ -1,15 +1,63 @@
-import { Button, Row } from "antd";
+import { Button } from "antd";
 import signUpImg from "../../assets/images/form/signUp.png";
 import UseForm from "../../components/form/Form";
 import FormInput from "../../components/form/Input";
 import { FieldValues } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSignUpMutation } from "../../redux/features/auth/authApi";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
-  const onSubmit = async (data: FieldValues) => {
-    const { email, password } = data;
+  const navigate = useNavigate();
+  const [signUp] = useSignUpMutation();
 
-    console.log({ email, password });
+  const onSubmit = async (data: FieldValues) => {
+    const toastId = toast.loading("Signing Up...");
+    try {
+      const { name, email, password, phone, address } = data;
+
+      const userInfo = {
+        name,
+        email,
+        password,
+        phone,
+        address,
+        role: "user",
+      };
+
+      const res = await signUp(userInfo).unwrap();
+      if (res?.error?.status === 400) {
+        const match = res.error?.data?.message.match(/index: (.*?) dup key/);
+        if (match[1] === "phone_1") {
+          toast.error(
+            `An account is already created with the number  ${phone}`,
+            {
+              id: toastId,
+              duration: 3500,
+            }
+          );
+        } else if (match[1] === "email_1") {
+          toast.error(
+            `An account is already created with the email  ${email}`,
+            {
+              id: toastId,
+              duration: 3500,
+            }
+          );
+        }
+      }
+      toast.success(res.message, { duration: 2500, id: toastId });
+      navigate("/login");
+    } catch (err) {
+      if (err.status === 400) {
+        return toast.error("Duplicate email or phone number", {
+          id: toastId,
+          duration: 2500,
+        });
+      }
+      toast.error("Something went wrong!", { id: toastId, duration: 2500 });
+      console.log({ err });
+    }
   };
   return (
     <div className="md:flex">

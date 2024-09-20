@@ -13,7 +13,10 @@ const Navbar = () => {
   const handleLogout = () => {
     const toastId = toast.loading("Logging Out...");
     dispatch(logOut());
-    toast.success("Logged Out successfully!", { duration: 2500, id: toastId });
+    toast.success("User logged Out Successfully!", {
+      duration: 2500,
+      id: toastId,
+    });
   };
   return (
     <>
