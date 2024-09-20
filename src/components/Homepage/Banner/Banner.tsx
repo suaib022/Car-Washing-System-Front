@@ -70,7 +70,7 @@ const Banner = () => {
                 : "opacity-0 -translate-x-10"
             }`}
           >
-            <span className="font-medium text-xl">Explore More</span>
+            <span className="font-medium text-xl">Book A Service</span>
           </button>
         </div>
       </div>
