@@ -3,13 +3,46 @@ import UseForm from "../../components/form/Form";
 import FormInput from "../../components/form/Input";
 import loginImg from "../../assets/images/form/login.png";
 import { FieldValues } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/hooks";
+import { useLoginMutation } from "../../redux/features/auth/authApi";
+import { verifyToken } from "../../utils/verifyToken";
+import { setUser, TUser } from "../../redux/features/auth/authSlice";
+import toast from "react-hot-toast";
 
 const Login = () => {
-  const onSubmit = async (data: FieldValues) => {
-    const { email, password } = data;
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-    console.log({ email, password });
+  const defaultValues = {
+    email: "3web@programming-hero.com",
+    password: "u3",
+  };
+
+  const [login] = useLoginMutation();
+
+  const onSubmit = async (data: FieldValues) => {
+    const toastId = toast.loading("Logging In...");
+    try {
+      const { email, password } = data;
+      const userInfo = {
+        email,
+        password,
+      };
+
+      const res = await login(userInfo).unwrap();
+      console.log({ res });
+
+      const { message, token } = res;
+      const accessToken = token;
+      const user = verifyToken(accessToken) as TUser;
+
+      dispatch(setUser({ user, token }));
+      navigate("/");
+      toast.success(message, { id: toastId, duration: 2500 });
+    } catch (error) {
+      toast.error(error.data.message, { id: toastId, duration: 2500 });
+    }
   };
   return (
     <div className="md:flex">
@@ -24,7 +57,7 @@ const Login = () => {
           align="middle"
           style={{}}
         >
-          <UseForm onSubmit={onSubmit}>
+          <UseForm onSubmit={onSubmit} defaultValues={defaultValues}>
             <div className="space-y-8  flex flex-col font-semibold">
               <FormInput
                 required={true}

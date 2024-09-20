@@ -1,8 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo1.png";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { getCurrentUser, logOut } from "../../redux/features/auth/authSlice";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const user = useAppSelector(getCurrentUser);
+
+  const handleLogout = () => {
+    const toastId = toast.loading("Logging Out...");
+    dispatch(logOut());
+    toast.success("Logged Out successfully!", { duration: 2500, id: toastId });
+  };
   return (
     <>
       <div className="navbar max-w-screen-xl mx-auto fixed top-0 left-0 right-0 backdrop-blur-md shadow-lg z-50 h-16">
@@ -27,12 +39,21 @@ const Navbar = () => {
           >
             Bookings
           </button>
-          <button
-            onClick={() => navigate("/login")}
-            className="bg-transparent max-w-24 text-white flex-grow btn btn-outline hover:text-white border-none hover:bg-sky-500 h-12"
-          >
-            Login
-          </button>
+          {!user ? (
+            <button
+              onClick={() => navigate("/login")}
+              className="bg-transparent max-w-24 text-white flex-grow btn btn-outline hover:text-white border-none hover:bg-sky-500 h-12"
+            >
+              Login
+            </button>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="bg-transparent max-w-24 text-white flex-grow btn btn-outline hover:text-white border-none hover:bg-sky-500 h-12"
+            >
+              Logout
+            </button>
+          )}
         </div>
 
         <div className="navbar-end md:hidden">
@@ -65,14 +86,41 @@ const Navbar = () => {
                 aria-label="close sidebar"
                 className="drawer-overlay"
               ></label>
-              <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-                <li>
-                  <a>Sidebar Item 1</a>
-                </li>
-                <li>
-                  <a>Sidebar Item 2</a>
-                </li>
-              </ul>
+              <div className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                <div>
+                  <button
+                    onClick={() => navigate("/services")}
+                    className=" w-full text-white flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
+                  >
+                    Services
+                  </button>
+                </div>
+                <div>
+                  <button
+                    onClick={() => navigate("/services")}
+                    className="bg-transparent w-full text-white flex-grow btn hover:shadow-sm h-12"
+                  >
+                    Bookings
+                  </button>
+                </div>
+                <div>
+                  {!user ? (
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="bg-transparent text-white flex-grow btn btn-outline hover:text-white border-none hover:bg-sky-500 h-12 w-full"
+                    >
+                      Login
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleLogout}
+                      className="bg-transparent w-full text-white flex-grow btn btn-outline hover:text-white border-none hover:bg-red-500 h-12"
+                    >
+                      Logout
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
