@@ -65,6 +65,12 @@ const Navbar = () => {
             </svg>
           </label>
           <button
+            onClick={() => navigate("/dashboard")}
+            className=" max-w-24  flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
+          >
+            Dashboard
+          </button>
+          <button
             onClick={() => navigate("/services")}
             className=" max-w-24  flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
           >
