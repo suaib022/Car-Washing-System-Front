@@ -28,6 +28,7 @@ const UserManagement = () => {
               <th>Name</th>
               <th>Contact Info</th>
               <th>Role</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -41,14 +42,36 @@ const UserManagement = () => {
                 <td>{user.phone}</td>
                 <td>
                   {user?.role === "user" ? (
-                    <div className="badge badge-accent font-semibold py-3">
+                    <div className="badge badge-accent font-bold text-xs py-3 uppercase">
                       {user.role}
                     </div>
                   ) : (
-                    <div className="badge badge-error font-semibold py-3">
+                    <div className="badge badge-error font-bold text-xs uppercase py-3">
                       {user.role}
                     </div>
                   )}
+                </td>
+                <td
+                  onClick={() =>
+                    document.getElementById(`${user._id}`).showModal()
+                  }
+                  className="underline hover:cursor-pointer font-semibold"
+                >
+                  <dialog id={`${user?._id}`} className="modal">
+                    <div className="modal-box">
+                      <h3 className="font-bold text-lg">Hello!</h3>
+                      <p className="py-4">
+                        Press ESC key or click the button below to close
+                      </p>
+                      <div className="modal-action">
+                        <form method="dialog">
+                          {/* if there is a button in form, it will close the modal */}
+                          <button className="btn">Close</button>
+                        </form>
+                      </div>
+                    </div>
+                  </dialog>
+                  View Bookings
                 </td>
               </tr>
             ))}

@@ -55,8 +55,12 @@ const Dashboard = () => {
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
+        <Header
+          style={{ padding: 0, background: colorBgContainer }}
+          className="flex"
+        >
           <Button
+            className="w-1/6 "
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
@@ -66,6 +70,9 @@ const Dashboard = () => {
               height: 64,
             }}
           />
+          <div className="w-5/6  text-3xl my-auto font-semibold  text-center">
+            Admin Dashboard
+          </div>
         </Header>
         <Content
           style={{
