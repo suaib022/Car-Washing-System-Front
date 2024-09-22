@@ -1,41 +1,37 @@
 import { LoadingOutlined } from "@ant-design/icons";
-import { useGetAllServicesQuery } from "../../redux/features/service/serviceApi";
+import {
+  useGetAllServicesQuery,
+  useSoftDeleteServiceMutation,
+} from "../../redux/features/service/serviceApi";
 import { Flex, Spin } from "antd";
 import AddService from "../../components/admin/AddService";
 import { FiEdit } from "react-icons/fi";
-import { FaTrash } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import UpdateService from "../../components/admin/UpdateService";
-import { useState } from "react";
+import toast from "react-hot-toast";
 
 const ServiceManagement = () => {
-  const [serviceId, setServiceId] = useState("");
+  const { data: allServices, isFetching } = useGetAllServicesQuery({
+    isDeleted: "false",
+  });
+  const [moveToBin] = useSoftDeleteServiceMutation();
 
-  const { data: allServices, isFetching } = useGetAllServicesQuery(undefined);
-
-  const handleDeleteService = () => {
-    console.log("object");
+  const handleDeleteService = (id: string) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, move to trash!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
+        moveToBin(id).then(() => {
+          toast.success("Item moved to trash", { duration: 2000 });
         });
       }
     });
-  };
-
-  const handleChange = (id: string) => {
-    setServiceId(id);
   };
 
   if (isFetching) {
@@ -83,19 +79,20 @@ const ServiceManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {allServices?.data?.map((user, index) => (
+            {allServices?.data?.map((service, index) => (
               <tr
-                key={user?._id}
+                key={service?._id}
                 className="hover:bg-teal-950 hover:text-white"
               >
                 <th>{index + 1}</th>
-                <td>{user.name}</td>
-                <td>{user.price}</td>
-                <td>{user.duration}</td>
+                <td>{service.name}</td>
+                <td>{service.price}</td>
+                <td>{service.duration}</td>
                 <td className="underline hover:cursor-pointer font-semibold">
-                  <dialog id={`${user?._id}`} className="modal">
+                  {/* Update modal */}
+                  <dialog id={`modal_${service?._id}`} className="modal">
                     <div className="modal-box">
-                      <UpdateService serviceId={serviceId} />
+                      <UpdateService serviceId={service._id} />
                       <div className="modal-action">
                         <form method="dialog">
                           <button className="btn">Close</button>
@@ -104,17 +101,20 @@ const ServiceManagement = () => {
                     </div>
                   </dialog>
                   <div className="flex justify-evenly items-center">
+                    {/* Edit Service */}
                     <span
                       onClick={() => {
-                        document.getElementById(`${user._id}`).showModal();
-                        handleChange(user._id);
+                        document
+                          .getElementById(`modal_${service._id}`)
+                          .showModal();
                       }}
                     >
-                      <FiEdit className="text-lg" />
+                      <FiEdit className="text-lg text-teal-700" />
                     </span>
+                    {/* Delete Service */}
                     <span>
-                      <FaTrash
-                        onClick={handleDeleteService}
+                      <FaRegTrashAlt
+                        onClick={() => handleDeleteService(service._id)}
                         className="text-red-600 text-lg"
                       />
                     </span>

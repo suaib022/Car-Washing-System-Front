@@ -119,35 +119,35 @@ const UpdateService = ({ serviceId }) => {
                 type="text"
                 name="name"
                 label="Service Name :"
-                defaultValue={singleService.data.name}
+                defaultValue={singleService?.data?.name}
               ></FormInput>
               <UseSelect
                 setSelectedOption={setSelectedOption}
                 options={categoryOptions}
                 name="category"
                 label="Category"
-                defaultValue={singleService.data.category}
+                defaultValue={singleService?.data?.category}
               />
               <FormInput
                 required={true}
                 type="textarea"
                 name="description"
                 label="Description :"
-                defaultValue={singleService.data.description}
+                defaultValue={singleService?.data?.description}
               ></FormInput>
               <FormInput
                 required={true}
                 type="number"
                 name="price"
                 label="Price :"
-                defaultValue={singleService.data.price}
+                defaultValue={singleService?.data?.price}
               ></FormInput>
               <FormInput
                 required={true}
                 type="number"
                 name="duration"
                 label="Duration :"
-                defaultValue={singleService.data.duration}
+                defaultValue={singleService?.data?.duration}
               ></FormInput>
 
               <Upload className="text-white" {...uploadProps}>

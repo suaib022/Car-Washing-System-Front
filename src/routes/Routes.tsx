@@ -8,6 +8,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import UserManagement from "../pages/Admin/UserManagement";
 import ServiceManagement from "../pages/Admin/ServiceManagement";
 import SlotManagement from "../pages/Admin/SlotManagement";
+import TrashManagement from "../pages/Admin/TrashManagement";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
           {
             path: "slotManagement",
             element: <SlotManagement />,
+          },
+          {
+            path: "trashManagement",
+            element: <TrashManagement />,
           },
         ],
       },

@@ -6,6 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { FaServicestack } from "react-icons/fa";
+import { FaRecycle } from "react-icons/fa";
 import { CiTimer } from "react-icons/ci";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -49,6 +50,14 @@ const Dashboard = () => {
               label: "Slot Management",
               onClick: () => {
                 navigate("/dashboard/slotManagement");
+              },
+            },
+            {
+              key: "4",
+              icon: <FaRecycle />,
+              label: "Recycle Bin",
+              onClick: () => {
+                navigate("/dashboard/trashManagement");
               },
             },
           ]}
