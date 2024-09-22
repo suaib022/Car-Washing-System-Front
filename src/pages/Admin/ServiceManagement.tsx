@@ -5,8 +5,12 @@ import AddService from "../../components/admin/AddService";
 import { FiEdit } from "react-icons/fi";
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import UpdateService from "../../components/admin/UpdateService";
+import { useState } from "react";
 
 const ServiceManagement = () => {
+  const [serviceId, setServiceId] = useState("");
+
   const { data: allServices, isFetching } = useGetAllServicesQuery(undefined);
 
   const handleDeleteService = () => {
@@ -28,6 +32,10 @@ const ServiceManagement = () => {
         });
       }
     });
+  };
+
+  const handleChange = (id: string) => {
+    setServiceId(id);
   };
 
   if (isFetching) {
@@ -87,10 +95,7 @@ const ServiceManagement = () => {
                 <td className="underline hover:cursor-pointer font-semibold">
                   <dialog id={`${user?._id}`} className="modal">
                     <div className="modal-box">
-                      <h3 className="font-bold text-lg">Hello!</h3>
-                      <p className="py-4">
-                        Press ESC key or click the button below to close
-                      </p>
+                      <UpdateService serviceId={serviceId} />
                       <div className="modal-action">
                         <form method="dialog">
                           <button className="btn">Close</button>
@@ -100,9 +105,10 @@ const ServiceManagement = () => {
                   </dialog>
                   <div className="flex justify-evenly items-center">
                     <span
-                      onClick={() =>
-                        document.getElementById(`${user._id}`).showModal()
-                      }
+                      onClick={() => {
+                        document.getElementById(`${user._id}`).showModal();
+                        handleChange(user._id);
+                      }}
                     >
                       <FiEdit className="text-lg" />
                     </span>

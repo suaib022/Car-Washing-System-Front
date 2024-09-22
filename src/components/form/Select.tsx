@@ -11,6 +11,7 @@ type TUseSelectProps = {
   setSelectedOption: any;
   requiredError?: boolean;
   setCategoryRequiredError?: any;
+  defaultValue?: string;
 };
 
 const UseSelect = ({
@@ -20,11 +21,12 @@ const UseSelect = ({
   setSelectedOption,
   requiredError,
   setCategoryRequiredError,
+  defaultValue,
 }: TUseSelectProps) => {
   const handleChange = (e: any) => {
     e.preventDefault();
     setSelectedOption(e.target.value);
-    setCategoryRequiredError(false);
+    setCategoryRequiredError && setCategoryRequiredError(false);
   };
 
   return (
@@ -34,6 +36,7 @@ const UseSelect = ({
         <Form.Item>
           <h2 className="text-white">{label} :</h2>
           <select
+            defaultValue={defaultValue}
             onChange={handleChange}
             className="select bg-white select-bordered w-full max-w-xs"
           >
