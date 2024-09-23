@@ -2,7 +2,12 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Flex, Spin } from "antd";
 import AddService from "../../components/admin/AddService";
 import { useState } from "react";
-import { useGetAllSlotsQuery } from "../../redux/features/slots/slotApi";
+import {
+  useGetAllSlotsQuery,
+  useUpdateSlotMutation,
+} from "../../redux/features/slots/slotApi";
+import toast from "react-hot-toast";
+import AddSlot from "../../components/admin/AddSlot";
 
 const slotStatusOptions = [
   { label: "Available", value: "available" },
@@ -10,16 +15,33 @@ const slotStatusOptions = [
 ];
 
 const ServiceManagement = () => {
-  const [serviceId, setServiceId] = useState("");
+  const [status, setStatus] = useState("");
+  const [hideButton, setHideButton] = useState(true);
 
   const { data: allSlots, isFetching } = useGetAllSlotsQuery(undefined);
+  const [updateSlotStatus] = useUpdateSlotMutation();
 
-  const handleChange = (id: string) => {
-    setServiceId(id);
+  const handleChange = (e) => {
+    e.preventDefault();
+    setStatus(e.target.value);
+    setHideButton(false);
   };
 
-  console.log({ allSlots });
+  const handleChangeSlotStatus = (slotId) => {
+    try {
+      console.log({ status });
+      const updatedData = { isBooked: status };
+      updateSlotStatus({ slotId, updatedData });
 
+      toast.success("Slots status updated successfully!", { duration: 2200 });
+
+      setHideButton(true);
+    } catch (error) {
+      console.error("Error updating slot status:", error);
+    }
+  };
+
+  // console.log({ allSlots });
   // console.log({ serviceId });
   if (isFetching) {
     return (
@@ -42,7 +64,7 @@ const ServiceManagement = () => {
         </button>
         <dialog id="my_modal_1" className="modal">
           <div className="modal-box bg-teal-950">
-            <AddService />
+            <AddSlot />
             <div className="modal-action">
               <form method="dialog">
                 <button className="btn bg-red-700 hover:bg-red-800 text-white">
@@ -80,16 +102,39 @@ const ServiceManagement = () => {
                 <td className=" hover:cursor-pointer font-semibold">
                   <dialog id={`${slot?._id}`} className="modal">
                     <div className="modal-box bg-teal-950 text-white">
-                      <select className="select select-ghost w-full max-w-xs">
+                      <h2 className="text-start mb-4">
+                        {" "}
+                        Change Booking Status :{" "}
+                      </h2>
+                      <select
+                        onChange={handleChange}
+                        defaultValue={slot?.isBooked}
+                        className="select select-ghost w-full max-w-xs"
+                      >
                         {slotStatusOptions.map((option) => (
-                          <option key={option.value}>{option.label}</option>
+                          <option value={option.value} key={option.value}>
+                            {option.label}
+                          </option>
                         ))}
                       </select>
                       <div className="modal-action">
                         <form method="dialog">
-                          <button className="btn btn-error text-white">
-                            Close
-                          </button>
+                          <div className="flex gap-6 items-center border-0">
+                            <button
+                              onClick={() => handleChangeSlotStatus(slot?._id)}
+                              className={`btn btn-sm rounded-md bg-blue-600 border-0 btn-error text-white hover:bg-blue-600 ${
+                                hideButton && "hidden"
+                              }`}
+                            >
+                              Change
+                            </button>
+                            <button
+                              onClick={() => setHideButton(true)}
+                              className="btn btn-sm rounded-md bg-red-700 border-0 btn-error text-white"
+                            >
+                              Close
+                            </button>
+                          </div>
                         </form>
                       </div>
                     </div>

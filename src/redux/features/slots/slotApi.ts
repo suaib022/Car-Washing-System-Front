@@ -25,20 +25,14 @@ const slotApi = baseApi.injectEndpoints({
     //   }),
     //   invalidatesTags: ["services"],
     // }),
-    // updateService: builder.mutation({
-    //   query: ({
-    //     serviceId,
-    //     updatedData,
-    //   }: {
-    //     serviceId: string;
-    //     updatedData: any;
-    //   }) => ({
-    //     url: `/services/${serviceId}`,
-    //     method: "PUT",
-    //     body: updatedData,
-    //   }),
-    //   invalidatesTags: ["services"],
-    // }),
+    updateSlot: builder.mutation({
+      query: ({ slotId, updatedData }) => ({
+        url: `/slots/${slotId}`,
+        method: "PUT",
+        body: updatedData,
+      }),
+      invalidatesTags: ["slots"],
+    }),
     // softDeleteService: builder.mutation({
     //   query: (serviceId) => ({
     //     url: `/services/${serviceId}`,
@@ -56,4 +50,4 @@ const slotApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllSlotsQuery } = slotApi;
+export const { useGetAllSlotsQuery, useUpdateSlotMutation } = slotApi;
