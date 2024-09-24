@@ -8,6 +8,7 @@ import { Button, Layout, Menu, theme } from "antd";
 import { FaServicestack } from "react-icons/fa";
 import { FaRecycle } from "react-icons/fa";
 import { CiTimer } from "react-icons/ci";
+import { CgProfile } from "react-icons/cg";
 import { Outlet, useNavigate } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
@@ -30,6 +31,14 @@ const Dashboard = () => {
           items={[
             {
               key: "1",
+              icon: <CgProfile />,
+              label: "My Profile",
+              onClick: () => {
+                navigate("/dashboard/my-profile");
+              },
+            },
+            {
+              key: "2",
               icon: <UserOutlined />,
               label: "User Management",
               onClick: () => {
@@ -37,7 +46,7 @@ const Dashboard = () => {
               },
             },
             {
-              key: "2",
+              key: "3",
               icon: <FaServicestack />,
               label: "Service Management",
               onClick: () => {
@@ -45,7 +54,7 @@ const Dashboard = () => {
               },
             },
             {
-              key: "3",
+              key: "4",
               icon: <CiTimer />,
               label: "Slot Management",
               onClick: () => {
@@ -53,7 +62,7 @@ const Dashboard = () => {
               },
             },
             {
-              key: "4",
+              key: "5",
               icon: <FaRecycle />,
               label: "Recycle Bin",
               onClick: () => {

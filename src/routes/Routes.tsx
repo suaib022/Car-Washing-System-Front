@@ -12,6 +12,7 @@ import SlotManagement from "../pages/Admin/SlotManagement";
 import Slots from "../pages/Admin/Slots";
 import AddSlot from "../pages/Admin/AddSlot";
 import ServiceDetails from "../pages/Service/ServiceDetails";
+import MyProfile from "../pages/Dashboard/MyProfile";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: <Dashboard />,
         children: [
+          {
+            path: "my-profile",
+            element: <MyProfile />,
+          },
           {
             path: "userManagement",
             element: <UserManagement />,
