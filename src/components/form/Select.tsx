@@ -38,10 +38,10 @@ const UseSelect = ({
           <select
             defaultValue={defaultValue}
             onChange={handleChange}
-            className="select bg-white select-bordered w-full max-w-xs"
+            className="select bg-white select-bordered w-full max-w-sm"
           >
             <option disabled value="x" selected>
-              Select a category
+              Select a {label.toLowerCase()}
             </option>
             {options?.map((option, index) => (
               <option key={index} value={option?.value}>

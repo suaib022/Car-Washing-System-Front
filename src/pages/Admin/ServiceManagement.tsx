@@ -3,19 +3,35 @@ import {
   useGetAllServicesQuery,
   useSoftDeleteServiceMutation,
 } from "../../redux/features/service/serviceApi";
-import { Flex, Spin } from "antd";
-import AddService from "../../components/admin/AddService";
+import { Flex, Pagination, PaginationProps, Spin } from "antd";
 import { FiEdit } from "react-icons/fi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
-import UpdateService from "../../components/admin/UpdateService";
 import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import AddService from "../../components/modal/admin/AddService";
+import UpdateService from "../../components/modal/admin/UpdateService";
 
 const ServiceManagement = () => {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [numberOfServices, setNumberOfServices] = useState(500);
+
   const { data: allServices, isFetching } = useGetAllServicesQuery({
     isDeleted: "false",
   });
+  const { data: allServicesWithoutLimit } = useGetAllServicesQuery({
+    isDeleted: "false",
+    limit: 50000,
+  });
   const [moveToBin] = useSoftDeleteServiceMutation();
+
+  // handle numberOfProducts state for pagination
+  useEffect(() => {
+    if (allServicesWithoutLimit?.data) {
+      setNumberOfServices(allServicesWithoutLimit.data.length);
+    }
+  }, [allServicesWithoutLimit]);
 
   const handleDeleteService = (id: string) => {
     Swal.fire({
@@ -32,6 +48,17 @@ const ServiceManagement = () => {
         });
       }
     });
+  };
+
+  // handle page and limit for pagination
+  const onChange: PaginationProps["onChange"] = (pageNumber, pageSize) => {
+    setPage(pageNumber);
+    setLimit(pageSize);
+  };
+
+  const onShowSizeChange = (_current: number, size: number) => {
+    setLimit(size);
+    setPage(1);
   };
 
   if (isFetching) {
@@ -84,7 +111,7 @@ const ServiceManagement = () => {
                 key={service?._id}
                 className="hover:bg-teal-950 hover:text-white"
               >
-                <th>{index + 1}</th>
+                <th>{index + 1 + (page - 1) * limit}</th>
                 <td>{service.name}</td>
                 <td>{service.price}</td>
                 <td>{service.duration}</td>
@@ -124,6 +151,18 @@ const ServiceManagement = () => {
             ))}
           </tbody>
         </table>
+
+        <div className="mt-6  shadow-xl rounded-md px-4 py-4">
+          <Pagination
+            showQuickJumper
+            current={page}
+            pageSize={limit}
+            total={numberOfServices}
+            onChange={onChange}
+            showSizeChanger
+            onShowSizeChange={onShowSizeChange}
+          />
+        </div>
       </div>
     </div>
   );

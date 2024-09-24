@@ -1,13 +1,13 @@
 import { Button, Row, Upload } from "antd";
-import UseForm from "../form/Form";
-import UseSelect from "../form/Select";
-import FormInput from "../form/Input";
 import { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import toast from "react-hot-toast";
 import { UploadProps } from "antd";
-import { image_hosting_api } from "../../Constant/imagebb";
-import { useAddServiceMutation } from "../../redux/features/service/serviceApi";
+import { useAddServiceMutation } from "../../../redux/features/service/serviceApi";
+import { image_hosting_api } from "../../../Constant/imagebb";
+import UseForm from "../../form/Form";
+import FormInput from "../../form/Input";
+import UseSelect from "../../form/Select";
 
 const categoryOptions = [
   { value: "ExteriorWash", label: "Exterior Wash" },
@@ -24,7 +24,7 @@ const categoryOptions = [
   { value: "LuxuryVehicleDetailing", label: "Luxury Vehicle Detailing" },
 ];
 
-const AddSlot = () => {
+const AddService = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [disableUploadButton, setDisableUploadButton] = useState(false);
@@ -111,7 +111,7 @@ const AddSlot = () => {
     <div>
       <div className=" py-8 rounded-3xl">
         <h2 className="text-3xl text-start font-semibold ml-8 mb-6 underline text-white">
-          Add New Slot{" "}
+          Add New Service{" "}
         </h2>
         <Row
           className="flex flex-col h-4/5"
@@ -196,4 +196,4 @@ const AddSlot = () => {
   );
 };
 
-export default AddSlot;
+export default AddService;

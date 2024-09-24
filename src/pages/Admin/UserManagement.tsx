@@ -1,9 +1,33 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { useGetAllUsersQuery } from "../../redux/features/auth/authApi";
-import { Flex, Spin } from "antd";
+import { Flex, Pagination, PaginationProps, Spin } from "antd";
+import { useEffect, useState } from "react";
 
 const UserManagement = () => {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [numberOfUsers, setNumberOfUsers] = useState(500);
+
   const { data: allUsers, isFetching } = useGetAllUsersQuery(undefined);
+  const { data: allUsersWithoutLimit } = useGetAllUsersQuery({ limit: 50000 });
+
+  // handle numberOfProducts state for pagination
+  useEffect(() => {
+    if (allUsersWithoutLimit?.data) {
+      setNumberOfUsers(allUsersWithoutLimit.data.length);
+    }
+  }, [allUsersWithoutLimit]);
+
+  // handle page and limit for pagination
+  const onChange: PaginationProps["onChange"] = (pageNumber, pageSize) => {
+    setPage(pageNumber);
+    setLimit(pageSize);
+  };
+
+  const onShowSizeChange = (_current: number, size: number) => {
+    setLimit(size);
+    setPage(1);
+  };
 
   if (isFetching) {
     return (
@@ -77,6 +101,17 @@ const UserManagement = () => {
             ))}
           </tbody>
         </table>
+        <div className="mt-6  shadow-xl rounded-md px-4 py-4">
+          <Pagination
+            showQuickJumper
+            current={page}
+            pageSize={limit}
+            total={numberOfUsers}
+            onChange={onChange}
+            showSizeChanger
+            onShowSizeChange={onShowSizeChange}
+          />
+        </div>
       </div>
     </div>
   );

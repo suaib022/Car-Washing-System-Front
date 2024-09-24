@@ -7,8 +7,11 @@ import SignUp from "../pages/Signup/SignUp";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import UserManagement from "../pages/Admin/UserManagement";
 import ServiceManagement from "../pages/Admin/ServiceManagement";
-import SlotManagement from "../pages/Admin/SlotManagement";
 import TrashManagement from "../pages/Admin/TrashManagement";
+import SlotManagement from "../pages/Admin/SlotManagement";
+import Slots from "../pages/Admin/Slots";
+import AddSlot from "../pages/Admin/AddSlot";
+import ServiceDetails from "../pages/Service/ServiceDetails";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +27,10 @@ const router = createBrowserRouter([
         element: <Service />,
       },
       {
+        path: "/services/:serviceId",
+        element: <ServiceDetails />,
+      },
+      {
         path: "/dashboard",
         element: <Dashboard />,
         children: [
@@ -36,12 +43,22 @@ const router = createBrowserRouter([
             element: <ServiceManagement />,
           },
           {
-            path: "slotManagement",
-            element: <SlotManagement />,
-          },
-          {
             path: "trashManagement",
             element: <TrashManagement />,
+          },
+          {
+            path: "slotManagement",
+            element: <SlotManagement />,
+            children: [
+              {
+                path: "manageSlots",
+                element: <Slots />,
+              },
+              {
+                path: "addSlot",
+                element: <AddSlot />,
+              },
+            ],
           },
         ],
       },

@@ -15,6 +15,7 @@ const serviceApi = baseApi.injectEndpoints({
         url: `/services/${serviceId}`,
         method: "GET",
       }),
+      providesTags: ["services"],
     }),
     addService: builder.mutation({
       query: (serviceData) => ({

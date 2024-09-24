@@ -8,10 +8,8 @@ import { Flex, Row, Spin } from "antd";
 import { FaTrashRestore } from "react-icons/fa";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
-import UpdateService from "../../components/admin/UpdateService";
-
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import UpdateService from "../../components/modal/admin/UpdateService";
 
 const TrashManagement = () => {
   // const [isRefetched, setIsRefetched] = useState(false);

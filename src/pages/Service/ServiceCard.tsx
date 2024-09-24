@@ -152,9 +152,9 @@ const ServiceCard = ({ product }: any) => {
               )}
             </CardDescription>
           </div>
-          <div className=" flex justify-between w-full ">
+          <div className=" flex justify-between w-full gap-4 ">
             <Button
-              onClick={() => navigate(`/products/${product?._id}`)}
+              onClick={() => navigate(`/services/${product?._id}`)}
               className="bg-blue-500 hover:bg-blue-600 h-9 w-2/5"
             >
               Details
@@ -164,7 +164,7 @@ const ServiceCard = ({ product }: any) => {
               className="text-white hover:bg-rose-600 bg-rose-500 border-0 max-w-24 hover:text-white h-9 w-3/5"
               variant="outline"
             >
-              Add To Cart
+              Book Now
             </Button>
           </div>
         </div>

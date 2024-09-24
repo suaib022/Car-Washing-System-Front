@@ -1,13 +1,17 @@
-import { Button, Row, Upload } from "antd";
-import UseForm from "../form/Form";
-import UseSelect from "../form/Select";
-import FormInput from "../form/Input";
-import { useEffect, useState } from "react";
+import { Button, Flex, Row, Spin, Upload } from "antd";
+import { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import toast from "react-hot-toast";
 import { UploadProps } from "antd";
-import { image_hosting_api } from "../../Constant/imagebb";
-import { useAddServiceMutation } from "../../redux/features/service/serviceApi";
+import { LoadingOutlined } from "@ant-design/icons";
+import {
+  useGetSingleServiceQuery,
+  useUpdateServiceMutation,
+} from "../../../redux/features/service/serviceApi";
+import { image_hosting_api } from "../../../Constant/imagebb";
+import UseForm from "../../form/Form";
+import FormInput from "../../form/Input";
+import UseSelect from "../../form/Select";
 
 const categoryOptions = [
   { value: "ExteriorWash", label: "Exterior Wash" },
@@ -24,57 +28,39 @@ const categoryOptions = [
   { value: "LuxuryVehicleDetailing", label: "Luxury Vehicle Detailing" },
 ];
 
-const AddService = () => {
+const UpdateService = ({ serviceId }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [disableUploadButton, setDisableUploadButton] = useState(false);
-  const [imageRequiredError, setImageRequiredError] = useState(false);
-  const [categoryRequiredError, setCategoryRequiredError] = useState(false);
 
-  const [addService] = useAddServiceMutation();
-
-  useEffect(() => {
-    if (selectedOption === "") {
-      setCategoryRequiredError(true);
-    } else {
-      setCategoryRequiredError(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!imageUrl) {
-      setImageRequiredError(true);
-    } else {
-      setImageRequiredError(false);
-    }
-  }, []);
+  const { data: singleService, isFetching } =
+    useGetSingleServiceQuery(serviceId);
+  const [updateService] = useUpdateServiceMutation();
 
   const onSubmit = async (data) => {
     const toastId = toast.loading("Creating new service...");
-    try {
-      if (!imageUrl || selectedOption === "") {
-        return;
-      }
 
+    try {
       const { name, description, price, duration } = data;
 
-      const serviceData = {
-        name,
-        category: selectedOption,
-        description,
-        price: Number(price),
-        duration: Number(duration),
-        image: imageUrl,
-        isDeleted: false,
+      const updatedData = {
+        name: name || singleService?.data?.name,
+        category: selectedOption || singleService?.data?.category,
+        description: description || singleService?.data?.description,
+        price: Number(price) || Number(singleService?.data?.price),
+        duration: Number(duration) || Number(singleService?.data?.duration),
+        image: imageUrl || singleService?.data?.image,
       };
 
-      await addService(serviceData);
-      toast.success("Service created successfully !", {
+      updateService({ serviceId, updatedData });
+      toast.success("Service updated successfully !", {
         id: toastId,
         duration: 2000,
       });
+
+      console.log({ updatedData });
     } catch (err) {
-      toast.error("Something went wrong !", { id: toastId, duration: 2000 });
+      toast.error("Something went wrong !", { duration: 2000 });
     }
   };
 
@@ -89,29 +75,36 @@ const AddService = () => {
         setDisableUploadButton(true);
 
         toast.success("Image uploaded successfully!");
-        setImageRequiredError(false);
       } else if (file.status === "error") {
         toast.error("Image upload failed");
-        setImageRequiredError(true);
       } else if (file.status === "removed") {
         setImageUrl("");
         setDisableUploadButton(false);
         toast.success("Image removed");
-        setImageRequiredError(true);
       }
     },
     onRemove(file) {
       setImageUrl("");
       setDisableUploadButton(false);
-      setImageRequiredError(true);
     },
   };
+
+  if (isFetching) {
+    return (
+      <Flex align="center" gap="middle">
+        <Spin
+          className="fixed inset-0 flex items-center justify-center"
+          indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
+        />
+      </Flex>
+    );
+  }
 
   return (
     <div>
       <div className=" py-8 rounded-3xl">
         <h2 className="text-3xl text-start font-semibold ml-8 mb-6 underline text-white">
-          Add New Service{" "}
+          Update Service{" "}
         </h2>
         <Row
           className="flex flex-col h-4/5"
@@ -126,33 +119,35 @@ const AddService = () => {
                 type="text"
                 name="name"
                 label="Service Name :"
-                className=""
+                defaultValue={singleService?.data?.name}
               ></FormInput>
               <UseSelect
-                setCategoryRequiredError={setCategoryRequiredError}
-                requiredError={categoryRequiredError}
                 setSelectedOption={setSelectedOption}
                 options={categoryOptions}
                 name="category"
                 label="Category"
+                defaultValue={singleService?.data?.category}
               />
               <FormInput
                 required={true}
                 type="textarea"
                 name="description"
                 label="Description :"
+                defaultValue={singleService?.data?.description}
               ></FormInput>
               <FormInput
                 required={true}
                 type="number"
                 name="price"
                 label="Price :"
+                defaultValue={singleService?.data?.price}
               ></FormInput>
               <FormInput
                 required={true}
                 type="number"
                 name="duration"
                 label="Duration :"
+                defaultValue={singleService?.data?.duration}
               ></FormInput>
 
               <Upload className="text-white" {...uploadProps}>
@@ -171,9 +166,7 @@ const AddService = () => {
                   Upload
                 </Button>
               </Upload>
-              {imageRequiredError && (
-                <small style={{ color: "red" }}>Image is required !</small>
-              )}
+
               <Button
                 style={{
                   backgroundColor: "#0ea5e9",
@@ -186,7 +179,7 @@ const AddService = () => {
                 htmlType="submit"
                 className=""
               >
-                Create
+                Update
               </Button>
             </div>
           </UseForm>
@@ -196,4 +189,4 @@ const AddService = () => {
   );
 };
 
-export default AddService;
+export default UpdateService;

@@ -49,7 +49,7 @@ const Dashboard = () => {
               icon: <CiTimer />,
               label: "Slot Management",
               onClick: () => {
-                navigate("/dashboard/slotManagement");
+                navigate("/dashboard/slotManagement/manageSlots");
               },
             },
             {
