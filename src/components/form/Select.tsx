@@ -38,7 +38,7 @@ const UseSelect = ({
           <select
             defaultValue={defaultValue}
             onChange={handleChange}
-            className="select bg-white select-bordered w-full max-w-sm"
+            className="select bg-white select-bordered w-full "
           >
             <option disabled value="x" selected>
               Select a {label.toLowerCase()}

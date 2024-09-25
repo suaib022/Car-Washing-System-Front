@@ -1,11 +1,9 @@
 import { useState } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
-import { FaServicestack } from "react-icons/fa";
+import { FaBook, FaServicestack } from "react-icons/fa";
+import { FaRegBookmark } from "react-icons/fa6";
+import { FiUsers } from "react-icons/fi";
 import { FaRecycle } from "react-icons/fa";
 import { CiTimer } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
@@ -39,14 +37,22 @@ const Dashboard = () => {
             },
             {
               key: "2",
-              icon: <UserOutlined />,
+              icon: <FaRegBookmark />,
+              label: "My Bookings",
+              onClick: () => {
+                navigate("/dashboard/my-bookings");
+              },
+            },
+            {
+              key: "3",
+              icon: <FiUsers />,
               label: "User Management",
               onClick: () => {
                 navigate("/dashboard/userManagement");
               },
             },
             {
-              key: "3",
+              key: "4",
               icon: <FaServicestack />,
               label: "Service Management",
               onClick: () => {
@@ -54,7 +60,7 @@ const Dashboard = () => {
               },
             },
             {
-              key: "4",
+              key: "5",
               icon: <CiTimer />,
               label: "Slot Management",
               onClick: () => {
@@ -62,7 +68,15 @@ const Dashboard = () => {
               },
             },
             {
-              key: "5",
+              key: "6",
+              icon: <FaBook />,
+              label: "Booking Management",
+              onClick: () => {
+                navigate("/dashboard/booking-management");
+              },
+            },
+            {
+              key: "7",
               icon: <FaRecycle />,
               label: "Recycle Bin",
               onClick: () => {

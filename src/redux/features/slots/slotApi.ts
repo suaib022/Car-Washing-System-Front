@@ -10,13 +10,6 @@ const slotApi = baseApi.injectEndpoints({
       }),
       providesTags: ["slots"],
     }),
-    // getSingleService: builder.query({
-    //   query: (serviceId: string) => ({
-    //     url: `/services/${serviceId}`,
-    //     method: "GET",
-    //   }),
-    //   providesTags: ["services"],
-    // }),
     addSlot: builder.mutation({
       query: (slotData) => ({
         url: "/services/slots",
@@ -33,20 +26,6 @@ const slotApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["slots"],
     }),
-    // softDeleteService: builder.mutation({
-    //   query: (serviceId) => ({
-    //     url: `/services/${serviceId}`,
-    //     method: "PATCH",
-    //   }),
-    //   invalidatesTags: ["services"],
-    // }),
-    // permanentDeleteService: builder.mutation({
-    //   query: (serviceId) => ({
-    //     url: `/services/${serviceId}`,
-    //     method: "DELETE",
-    //   }),
-    //   invalidatesTags: ["services"],
-    // }),
   }),
 });
 

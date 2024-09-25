@@ -21,7 +21,7 @@ const FormInput = ({
   defaultValue,
 }: TInputProps) => {
   return (
-    <div className="mb-4 w-full max-w-sm">
+    <div className="mb-4 w-full ">
       <h2 className="text-sm text-white">{label ? label : null}</h2>
       <Controller
         name={name}

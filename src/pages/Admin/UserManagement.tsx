@@ -66,11 +66,11 @@ const UserManagement = () => {
                 <td>{user.phone}</td>
                 <td>
                   {user?.role === "user" ? (
-                    <div className="badge badge-accent font-bold text-xs py-3 uppercase">
+                    <div className="badge badge-accent font-bold text-xs py-3 text-white uppercase">
                       {user.role}
                     </div>
                   ) : (
-                    <div className="badge badge-error font-bold text-xs uppercase py-3">
+                    <div className="badge badge-error font-bold text-xs uppercase text-white py-3">
                       {user.role}
                     </div>
                   )}

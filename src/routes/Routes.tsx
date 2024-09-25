@@ -13,6 +13,8 @@ import Slots from "../pages/Admin/Slots";
 import AddSlot from "../pages/Admin/AddSlot";
 import ServiceDetails from "../pages/Service/ServiceDetails";
 import MyProfile from "../pages/Dashboard/MyProfile";
+import MyBookings from "../pages/Dashboard/MyBookings";
+import BookingManagement from "../pages/Admin/BookingManagement";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +42,10 @@ const router = createBrowserRouter([
             element: <MyProfile />,
           },
           {
+            path: "my-bookings",
+            element: <MyBookings />,
+          },
+          {
             path: "userManagement",
             element: <UserManagement />,
           },
@@ -50,6 +56,10 @@ const router = createBrowserRouter([
           {
             path: "trashManagement",
             element: <TrashManagement />,
+          },
+          {
+            path: "booking-management",
+            element: <BookingManagement />,
           },
           {
             path: "slotManagement",

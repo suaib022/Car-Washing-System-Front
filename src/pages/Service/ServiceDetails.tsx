@@ -13,7 +13,6 @@ import { useGetAllSlotsQuery } from "../../redux/features/slots/slotApi";
 import BookService from "../../components/modal/user/BookService";
 
 const ProductDetails = () => {
-  const dispatch = useAppDispatch();
   const { serviceId } = useParams<{ serviceId: string }>();
 
   if (serviceId === undefined) {
@@ -29,6 +28,7 @@ const ProductDetails = () => {
   const { data: availableSlots } = useGetAllSlotsQuery({
     service: serviceId,
     isBooked: "available",
+    limit: 50000,
   });
 
   console.log({ service, availableSlots });
@@ -67,6 +67,9 @@ const ProductDetails = () => {
         </div>
 
         <div className="space-y-3 my-auto sm:w-1/2">
+          <h2 className="text-orange-600 font-semibold text-lg text-start">
+            $ {price}
+          </h2>
           <h2 className="text-2xl font-semibold text-start">{name}</h2>
 
           <h2 className="font-semibold text-lg text-start">
@@ -75,18 +78,7 @@ const ProductDetails = () => {
           <p className="text-lg font-semibold">
             Description : <span className="italic">{description}</span>
           </p>
-          <Button
-            onClick={() => {
-              document.getElementById(`modal_${serviceId}`).showModal();
-            }}
-            disabled={availableSlots?.data?.length <= 0}
-            className="bg-rose-600 text-white hover:text-white max-w-24 border-rose-700 hover:bg-rose-700 h-9"
-          >
-            Book Now
-          </Button>
-          <h2 className="text-orange-600 font-semibold text-lg text-start">
-            $ {price}
-          </h2>
+
           <h2 className="flex items-center gap-1 text-sm">
             {availableSlots?.data?.length > 0 ? (
               <>
@@ -104,6 +96,16 @@ const ProductDetails = () => {
               </>
             )}
           </h2>
+
+          <Button
+            onClick={() => {
+              document.getElementById(`modal_${serviceId}`).showModal();
+            }}
+            disabled={availableSlots?.data?.length <= 0}
+            className="bg-rose-600 text-white hover:text-white max-w-24 border-rose-700 hover:bg-rose-700 h-9"
+          >
+            Book Now
+          </Button>
         </div>
       </div>
     </>

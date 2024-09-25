@@ -14,6 +14,7 @@ const authApi = baseApi.injectEndpoints({
         url: `/auth/users/${userEmail}`,
         method: "GET",
       }),
+      providesTags: ["auth"],
     }),
     login: builder.mutation({
       query: (userInfo) => ({
@@ -21,6 +22,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: userInfo,
       }),
+      invalidatesTags: ["auth", "services", "bookings", "slots"],
     }),
     signUp: builder.mutation({
       query: (userInfo) => ({
@@ -28,6 +30,15 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: userInfo,
       }),
+      invalidatesTags: ["auth", "services", "bookings", "slots"],
+    }),
+    updateUser: builder.mutation({
+      query: ({ userId, updatedData }) => ({
+        url: `/auth/updateUser/${userId}`,
+        method: "PUT",
+        body: updatedData,
+      }),
+      invalidatesTags: ["auth", "services", "bookings", "slots"],
     }),
   }),
 });
@@ -37,4 +48,5 @@ export const {
   useSignUpMutation,
   useGetAllUsersQuery,
   useGetSingleUserQuery,
+  useUpdateUserMutation,
 } = authApi;

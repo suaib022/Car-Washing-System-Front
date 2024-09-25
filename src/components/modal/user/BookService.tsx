@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useGetAllSlotsQuery } from "../../../redux/features/slots/slotApi";
 import UseForm from "../../form/Form";
@@ -12,6 +12,7 @@ import { useGetSingleUserQuery } from "../../../redux/features/auth/authApi";
 import { Button } from "antd";
 import { useAddBookingMutation } from "../../../redux/features/booking/bookingApi";
 import toast from "react-hot-toast";
+import { FieldValues } from "react-hook-form";
 
 const vehicleTypesOptions = [
   { value: "car", label: "Car" },
@@ -31,6 +32,8 @@ const BookService = () => {
   const [selectedSlot, setSelectedSlot] = useState("");
   const [selectedVehicleType, setSelectedVehicleType] = useState("");
 
+  const navigate = useNavigate();
+
   if (serviceId === undefined) {
     return <div>Error: ID is missing</div>;
   }
@@ -40,6 +43,7 @@ const BookService = () => {
   const { data: availableSlots, refetch } = useGetAllSlotsQuery({
     service: serviceId,
     isBooked: "available",
+    limit: 50000,
   });
 
   const user = useAppSelector(getCurrentUser);
@@ -57,8 +61,8 @@ const BookService = () => {
     ).format("h:mm A")} To ${moment(item?.endTime, "HH:mm").format("h:mm A")}`,
   }));
 
-  const onSubmit = async (data) => {
-    const toastId = toast.loading("Booking in precess");
+  const onSubmit = async (data: FieldValues) => {
+    const toastId = toast.loading("Booking in process");
     try {
       const {
         vehicleModel,
@@ -87,6 +91,7 @@ const BookService = () => {
           duration: 2300,
         });
       }
+      navigate("/dashboard/my-bookings");
       toast.success("Booking successful !", { id: toastId, duration: 2300 });
 
       console.log({ res });
@@ -99,7 +104,7 @@ const BookService = () => {
   return (
     <div className="  ">
       <UseForm onSubmit={onSubmit}>
-        <div className="w-full mx-auto">
+        <div className="w-4/5 mx-auto">
           <UseSelect
             setSelectedOption={setSelectedVehicleType}
             options={vehicleTypesOptions}
@@ -154,7 +159,7 @@ const BookService = () => {
               borderRadius: "8px",
               border: "0",
               font: "inherit",
-              width: "30%",
+              width: "25%",
             }}
             htmlType="submit"
             className=""

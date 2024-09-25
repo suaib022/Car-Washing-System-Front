@@ -11,10 +11,10 @@ const bookingApi = baseApi.injectEndpoints({
       providesTags: ["bookings"],
     }),
     getUsersAllBookings: builder.query({
-      query: (accessToken) => ({
+      query: (query) => ({
         url: "/my-bookings",
         method: "GET",
-        headers: accessToken,
+        params: query,
       }),
       providesTags: ["bookings"],
     }),

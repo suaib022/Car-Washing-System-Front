@@ -20,61 +20,11 @@ const MAX_NAME_LENGTH = 30;
 
 const ServiceCard = ({ product }: any) => {
   const navigate = useNavigate();
-  //   const dispatch = useAppDispatch();
 
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [showFullName, setShowFullName] = useState(false);
-  //   const { disabledCartButtons, setDisabledCartButtons } =
-  //     useOutletContext<any>();
 
-  const {
-    data: allProducts,
-    isLoading: isAllProductsLoading,
-    isError: isAllProductsError,
-  } = useGetAllServicesQuery({ limit: 5000 });
-
-  const { _id, name, price, description } = product;
-
-  // handle addToCart button status for each product from DB
-  //   useEffect(() => {
-  //     if (
-  //       !isAllProductsLoading &&
-  //       !isAllProductsError &&
-  //       allProducts
-  //     ) {
-  //       let disabledButtons = [];
-
-  //       for (let i = 0; i < allProducts.data?.length; i++) {
-  //         const product = allProducts.data[i];
-  //         const existingCartItem = allCartItems.find(
-  //           (item) => item._id === product?._id
-  //         );
-
-  //         if (existingCartItem) {
-  //           if (
-  //             (existingCartItem!.quantity as number) >=
-  //             (existingCartItem!.quantityInStock as number)
-  //           ) {
-  //             disabledButtons.push({ [product._id]: true });
-  //           } else {
-  //             disabledButtons.push({ [product._id]: false });
-  //           }
-  //         } else if (product?.quantity === 0) {
-  //           disabledButtons.push({ [product._id]: true });
-  //         } else {
-  //           disabledButtons.push({ [product._id]: false });
-  //         }
-  //       }
-
-  //       setDisabledCartButtons(disabledButtons);
-  //     }
-  //   }, [
-  //     allCartItems,
-  //     allProducts,
-  //     isAllProductsLoading,
-  //     isAllProductsError,
-  //     setDisabledCartButtons,
-  //   ]);
+  const { name, price, description } = product;
 
   // handle truncate name and description
   const toggleDescription = () => {
@@ -94,25 +44,6 @@ const ServiceCard = ({ product }: any) => {
     name.length > MAX_NAME_LENGTH && !showFullName
       ? `${name.substring(0, MAX_NAME_LENGTH)}...`
       : name;
-
-  //   const isDisabled = disabledCartButtons.find(
-  //     (button: any) => button[_id] === true
-  //   );
-
-  if (isAllProductsLoading) {
-    return (
-      <Flex align="center" gap="middle">
-        <Spin
-          className="fixed inset-0 flex items-center justify-center"
-          indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-        />
-      </Flex>
-    );
-  }
-
-  if (isAllProductsError) {
-    return <img className="h-[450px] mx-auto" src={errorImg} alt="" />;
-  }
 
   return (
     <Card className="rounded-2xl bg-teal-950 text-white border-0 shadow-md">
@@ -138,7 +69,7 @@ const ServiceCard = ({ product }: any) => {
         />
       </CardContent>
       <CardFooter className="  ">
-        <div className="space-y-4  flex flex-col mx-auto gap-4">
+        <div className="space-y-4  w-full text-center flex flex-col mx-auto gap-4">
           <div className="">
             <CardDescription className=" italic text-white">
               {truncateDescription}
@@ -152,19 +83,12 @@ const ServiceCard = ({ product }: any) => {
               )}
             </CardDescription>
           </div>
-          <div className=" flex justify-between w-full gap-4 ">
+          <div className=" flex justify-center">
             <Button
               onClick={() => navigate(`/services/${product?._id}`)}
-              className="bg-blue-500 hover:bg-blue-600 h-9 w-2/5"
+              className="bg-blue-500 w-3/4 hover:bg-blue-600 h-9"
             >
               Details
-            </Button>
-            <Button
-              //   disabled={!!isDisabled}
-              className="text-white hover:bg-rose-600 bg-rose-500 border-0 max-w-24 hover:text-white h-9 w-3/5"
-              variant="outline"
-            >
-              Book Now
             </Button>
           </div>
         </div>
