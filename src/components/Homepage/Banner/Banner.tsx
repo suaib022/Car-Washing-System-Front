@@ -64,13 +64,13 @@ const Banner = () => {
         </div>
         <div className="  flex flex-col justify-evenly">
           <button
-            className={`btn mt-12 btn-outline hover:text-white hover:bg-gradient-to-r from-red-500 to-red-800 bg-clip-border w-full border-red-900 text-red-700 ${
+            className={`btn mt-12 btn-outline hover:text-white hover:bg-gradient-to-r from-purple-500 to-purple-500 ... bg-clip-border w-full border-purple-600 text-purple-700 ${
               showButton
                 ? "opacity-100 -translate-x-0"
                 : "opacity-0 -translate-x-10"
             }`}
           >
-            <span className="font-medium text-xl">Book A Service</span>
+            <span className="font-medium text-xl ">Book A Service</span>
           </button>
         </div>
       </div>

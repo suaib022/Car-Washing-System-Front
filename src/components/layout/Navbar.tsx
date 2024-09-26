@@ -20,7 +20,7 @@ const Navbar = () => {
   };
   return (
     <>
-      <div className="navbar max-w-screen-xl mx-auto fixed top-0 left-0 right-0 backdrop-blur-md shadow-lg z-50 h-16">
+      <div className="navbar tew max-w-screen-xl mx-auto fixed top-0 left-0 right-0 backdrop-blur-md shadow-lg z-50 h-16">
         <div className="navbar-start">
           <img
             onClick={() => navigate("/")}
@@ -29,7 +29,7 @@ const Navbar = () => {
             alt=""
           />
         </div>
-        <div className="navbar-end hidden md:flex  w-full   justify-end space-x-2">
+        <div className="navbar-end hidden text-white md:flex  w-full   justify-end space-x-2">
           <label className="flex cursor-pointer gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +48,7 @@ const Navbar = () => {
             <input
               type="checkbox"
               value="cupcake"
-              className="toggle theme-controller"
+              className="toggle text-white theme-controller"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -66,33 +66,33 @@ const Navbar = () => {
           </label>
           <button
             onClick={() => navigate("/dashboard")}
-            className=" max-w-24  flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
+            className=" max-w-24 text-white flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
           >
             Dashboard
           </button>
           <button
             onClick={() => navigate("/services")}
-            className=" max-w-24  flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
+            className=" max-w-24 text-white flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
           >
             Services
           </button>
           <button
             onClick={() => navigate("/services")}
-            className="bg-transparent max-w-24  flex-grow btn hover:shadow-sm h-12"
+            className="bg-transparent max-w-24 text-white flex-grow btn border-0 hover:shadow-sm h-12"
           >
             Bookings
           </button>
           {!user ? (
             <button
               onClick={() => navigate("/login")}
-              className="bg-transparent max-w-24  flex-grow btn btn-outline hover:text-white border-none hover:bg-sky-500 h-12"
+              className="bg-transparent max-w-24  flex-grow btn btn-outline text-white hover:text-white border-none hover:bg-sky-500 h-12"
             >
               Login
             </button>
           ) : (
             <button
               onClick={handleLogout}
-              className="bg-transparent max-w-24  flex-grow btn btn-outline hover:text-white border-none hover:bg-sky-500 h-12"
+              className="bg-transparent max-w-24  flex-grow btn btn-outline text-white hover:text-white border-none hover:bg-red-500 h-12"
             >
               Logout
             </button>
