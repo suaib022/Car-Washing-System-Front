@@ -9,7 +9,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { Toaster } from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <div className="max-w-screen-xl mx-auto bg-gradient-to-r from-indigo-500 ...">
+  <div className="max-w-screen-xl mx-auto bg-slate-950">
     <React.StrictMode>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>

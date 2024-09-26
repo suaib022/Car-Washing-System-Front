@@ -9,6 +9,7 @@ type TInputProps = {
   className?: string;
   required?: boolean;
   defaultValue?: string | any;
+  rows?: number;
 };
 
 const FormInput = ({
@@ -19,6 +20,7 @@ const FormInput = ({
   className,
   required,
   defaultValue,
+  rows,
 }: TInputProps) => {
   return (
     <div className="mb-4 w-full ">
@@ -32,6 +34,7 @@ const FormInput = ({
               className={className}
               id={name}
               defaultValue={defaultValue}
+              rows={rows}
               {...field}
             />
           ) : (
