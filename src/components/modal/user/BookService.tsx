@@ -38,7 +38,7 @@ const BookService = () => {
     return <div>Error: ID is missing</div>;
   }
 
-  console.log({ selectedSlot, selectedVehicleType });
+  // console.log({ selectedSlot, selectedVehicleType });
 
   const { data: availableSlots, refetch } = useGetAllSlotsQuery({
     service: serviceId,

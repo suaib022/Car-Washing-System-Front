@@ -1,19 +1,34 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-
 import { RxCrossCircled } from "react-icons/rx";
 import { FaCheckCircle } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import errorImg from "../../assets/images/Result/error-404.png";
-import { Flex, Spin } from "antd";
+import { Flex, Spin, Table } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useAppDispatch } from "../../redux/hooks";
+
 import { useGetSingleServiceQuery } from "../../redux/features/service/serviceApi";
 import { Button } from "../../components/ui/button";
 import { useGetAllSlotsQuery } from "../../redux/features/slots/slotApi";
 import BookService from "../../components/modal/user/BookService";
+import { useState } from "react";
+import type { DatePickerProps, TableColumnsType, TableProps } from "antd";
+import { DatePicker, Space } from "antd";
+import moment from "moment";
+type TableRowSelection<T> = TableProps<T>["rowSelection"];
+
+interface DataType {
+  key: React.Key;
+  _id: string;
+  slotInterval: string;
+}
 
 const ProductDetails = () => {
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedItems, setSelectedItems] = useState<DataType[]>([]);
   const { serviceId } = useParams<{ serviceId: string }>();
+  const [date, selectDate] = useState(moment().format("YYYY-MM-DD"));
+
+  const navigate = useNavigate();
 
   if (serviceId === undefined) {
     return <div>Error: ID is missing</div>;
@@ -25,13 +40,25 @@ const ProductDetails = () => {
     isError,
   } = useGetSingleServiceQuery(serviceId);
 
-  const { data: availableSlots } = useGetAllSlotsQuery({
+  const { data: availableSlots, isFetching } = useGetAllSlotsQuery({
     service: serviceId,
     isBooked: "available",
     limit: 50000,
   });
 
-  console.log({ service, availableSlots });
+  const { data: selectedDatesAvailableSlots, isSelectedDatesSlotsFetching } =
+    useGetAllSlotsQuery({
+      service: serviceId,
+      isBooked: "available",
+      limit: 50000,
+      date: date,
+    });
+
+  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+    selectDate(dateString as string);
+  };
+
+  // console.log({ service, availableSlots });
 
   if (isLoading) {
     return (
@@ -47,6 +74,43 @@ const ProductDetails = () => {
   if (isError) {
     return <img className="h-[450px] mx-auto" src={errorImg} alt="" />;
   }
+
+  const data: DataType[] = selectedDatesAvailableSlots?.data?.map(
+    (item: any, index: any) => ({
+      key: index,
+      _id: item._id,
+      slotInterval: `${moment(item?.date).format("DD MMM YYYY")}, From ${moment(
+        item?.startTime,
+        "HH:mm"
+      ).format("h:mm A")} To ${moment(item?.endTime, "HH:mm").format(
+        "h:mm A"
+      )}`,
+    })
+  );
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+
+    const items = data.filter((item) => newSelectedRowKeys.includes(item.key));
+    setSelectedItems(items);
+  };
+
+  const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    type: "radio",
+    selections: [Table.SELECTION_NONE],
+  };
+
+  const columns: TableColumnsType<DataType> = [
+    {
+      title: "Time Interval",
+      dataIndex: "slotInterval",
+    },
+  ];
+
+  console.log({ selectedItems });
+  // console.log({ date });
 
   const { name, price, description, duration, image } = service.data;
 
@@ -97,15 +161,56 @@ const ProductDetails = () => {
             )}
           </h2>
 
-          <Button
-            onClick={() => {
-              document.getElementById(`modal_${serviceId}`).showModal();
-            }}
-            disabled={availableSlots?.data?.length <= 0}
-            className="bg-rose-600 text-white hover:text-white max-w-24 border-rose-700 hover:bg-rose-700 h-9"
-          >
-            Book Now
-          </Button>
+          <div className="pt-2">
+            <div className="flex w-full justify-between">
+              <h2 className="text-xl text-white font-semibold text-start mb-4">
+                Available Slots{" "}
+                {moment().format("MMM DD YYYY") ===
+                moment(date).format("MMM DD YYYY") ? (
+                  <span>Today</span>
+                ) : (
+                  <span>
+                    On{" "}
+                    <span className="text-blue-500">
+                      {" "}
+                      {moment(date).format("MMM DD YYYY")}
+                    </span>
+                  </span>
+                )}
+              </h2>
+              <Space direction="vertical">
+                <DatePicker onChange={onChange} />
+              </Space>
+            </div>
+            <div>
+              {selectedDatesAvailableSlots?.data?.length === 0 ? (
+                <div className="bg-white  text-black text-center py-6 font-semibold text-lg rounded-md">
+                  <p>
+                    No Slots available on {moment(date).format("MMM DD YYYY")}
+                  </p>
+                </div>
+              ) : (
+                <Table
+                  showHeader={false}
+                  pagination={false}
+                  className=" "
+                  rowSelection={rowSelection}
+                  columns={columns}
+                  dataSource={data}
+                  loading={isFetching || isSelectedDatesSlotsFetching}
+                />
+              )}
+
+              <Button
+                onClick={() => navigate("/book-service")}
+                className={`bg-rose-600 text-white hover:text-white max-w-48 mt-4 border-rose-700 hover:bg-rose-700 h-9 ${
+                  selectedItems?.length === 0 && "hidden"
+                }`}
+              >
+                Book This Service
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -16,6 +16,7 @@ import MyProfile from "../pages/Dashboard/MyProfile";
 import MyBookings from "../pages/Dashboard/MyBookings";
 import BookingManagement from "../pages/Admin/BookingManagement";
 import Review from "../pages/Review/Review";
+import BookService from "../pages/Booking/BookService";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "/services/:serviceId",
         element: <ServiceDetails />,
+      },
+      {
+        path: "/book-service",
+        element: <BookService />,
       },
       {
         path: "/dashboard",
