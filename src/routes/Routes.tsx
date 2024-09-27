@@ -15,6 +15,7 @@ import ServiceDetails from "../pages/Service/ServiceDetails";
 import MyProfile from "../pages/Dashboard/MyProfile";
 import MyBookings from "../pages/Dashboard/MyBookings";
 import BookingManagement from "../pages/Admin/BookingManagement";
+import Review from "../pages/Review/Review";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/review",
+        element: <Review />,
       },
       {
         path: "/services",

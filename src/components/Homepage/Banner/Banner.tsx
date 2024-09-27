@@ -62,15 +62,15 @@ const Banner = () => {
             showroom shine while protecting the environment.
           </p>
         </div>
-        <div className="  flex flex-col justify-evenly">
+        <div className="flex flex-col justify-evenly">
           <button
-            className={`btn mt-12 btn-outline hover:text-white hover:bg-gradient-to-r from-purple-600 to-purple-900 hover:border-0 ... bg-clip-border w-full border-white  text-white ${
+            className={`btn mt-12 btn-outline hover:text-white hover:bg-[#f43f5e] hover:border-0 ... bg-clip-border w-full border-white  text-white ${
               showButton
                 ? "opacity-100 -translate-x-0"
                 : "opacity-0 -translate-x-10"
             }`}
           >
-            <span className="font-medium text-xl ">Book A Service</span>
+            <span className="font-medium text-lg ">Book A Service</span>
           </button>
         </div>
       </div>

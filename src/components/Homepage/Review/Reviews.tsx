@@ -1,6 +1,8 @@
 import { Rate } from "antd";
 import { useGetAllReviewsQuery } from "../../../redux/features/review/reviewApi";
 import ReviewCard from "./ReviewCard";
+import { Button } from "../../ui/button";
+import { useNavigate } from "react-router-dom";
 
 type TStatistics = {
   totalReviews: number;
@@ -14,6 +16,8 @@ type TStatistics = {
 };
 
 const Reviews = () => {
+  const navigate = useNavigate();
+
   const { data: allReviews, isFetching } = useGetAllReviewsQuery({
     limit: 2,
     sort: "-createdAt",
@@ -60,9 +64,10 @@ const Reviews = () => {
   }
 
   if (isFetching || isAllReviewsFetching) {
-    return;
+    return (
+      <span className="loading loading-dots flex my-32 mx-auto loading-lg"></span>
+    );
   }
-  console.log({ allReviews });
 
   return (
     <div>
@@ -130,12 +135,20 @@ const Reviews = () => {
           </div>
         </div>
       </div>
-      <div className=" sm:flex ">
+      <div className=" sm:flex justify-evenly ">
         {allReviews?.data?.map((review, index) => (
-          <div key={review?._id} className="sm:w-1/2 mx-4 w-full">
+          <div key={review?._id} className="sm:w-1/2 mx-0 sm:mx-4 w-full">
             <ReviewCard review={review} />
           </div>
         ))}
+      </div>
+      <div>
+        <Button
+          onClick={() => navigate("/review")}
+          className="flex mx-auto w-1/4 text-white hover:bg-rose-500 text-md font-semibold mb-12 bg-[#f43f5e]"
+        >
+          See More
+        </Button>
       </div>
     </div>
   );

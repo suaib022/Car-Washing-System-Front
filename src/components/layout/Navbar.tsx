@@ -20,7 +20,7 @@ const Navbar = () => {
   };
   return (
     <>
-      <div className="navbar tew max-w-screen-xl mx-auto fixed top-0 left-0 right-0 backdrop-blur-md shadow-lg z-50 h-16">
+      <div className="navbar tew max-w-screen-xl mx-auto fixed bg-gray-900 top-0 left-0 right-0 backdrop-blur-md shadow-lg z-50 h-16">
         <div className="navbar-start">
           <img
             onClick={() => navigate("/")}
