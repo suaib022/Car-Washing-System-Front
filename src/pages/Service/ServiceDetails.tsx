@@ -75,7 +75,7 @@ const ProductDetails = () => {
     return <img className="h-[450px] mx-auto" src={errorImg} alt="" />;
   }
 
-  const data: DataType[] = selectedDatesAvailableSlots?.data?.map(
+  const slotData: DataType[] = selectedDatesAvailableSlots?.data?.map(
     (item: any, index: any) => ({
       key: index,
       _id: item._id,
@@ -91,7 +91,9 @@ const ProductDetails = () => {
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
 
-    const items = data.filter((item) => newSelectedRowKeys.includes(item.key));
+    const items = slotData.filter((item) =>
+      newSelectedRowKeys.includes(item.key)
+    );
     setSelectedItems(items);
   };
 
@@ -109,8 +111,9 @@ const ProductDetails = () => {
     },
   ];
 
-  console.log({ selectedItems });
+  // console.log({ selectedItems });
   // console.log({ date });
+  console.log({ selectedDatesAvailableSlots });
 
   const { name, price, description, duration, image } = service.data;
 
@@ -196,13 +199,15 @@ const ProductDetails = () => {
                   className=" "
                   rowSelection={rowSelection}
                   columns={columns}
-                  dataSource={data}
+                  dataSource={slotData}
                   loading={isFetching || isSelectedDatesSlotsFetching}
                 />
               )}
 
               <Button
-                onClick={() => navigate("/book-service")}
+                onClick={() =>
+                  navigate(`/book-service/${selectedItems[0]._id}`)
+                }
                 className={`bg-rose-600 text-white hover:text-white max-w-48 mt-4 border-rose-700 hover:bg-rose-700 h-9 ${
                   selectedItems?.length === 0 && "hidden"
                 }`}

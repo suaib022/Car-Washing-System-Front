@@ -40,7 +40,7 @@ const router = createBrowserRouter([
         element: <ServiceDetails />,
       },
       {
-        path: "/book-service",
+        path: "/book-service/:slotId",
         element: <BookService />,
       },
       {
