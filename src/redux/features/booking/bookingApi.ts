@@ -26,6 +26,13 @@ const bookingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["bookings", "services", "slots"],
     }),
+    payBooking: builder.mutation({
+      query: (slotId) => ({
+        url: `/bookings/${slotId}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["bookings", "services", "slots"],
+    }),
   }),
 });
 
@@ -33,4 +40,5 @@ export const {
   useGetAllBookingsQuery,
   useGetUsersAllBookingsQuery,
   useAddBookingMutation,
+  usePayBookingMutation,
 } = bookingApi;

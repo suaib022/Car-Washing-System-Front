@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../redux/hooks";
 import { getCurrentUser } from "../../../redux/features/auth/authSlice";
+import "./ReviewForm.css"; // Import custom CSS for animation
 
 const ReviewForm = () => {
   const [selectedService, setSelectedService] = useState(null);
@@ -20,7 +21,6 @@ const ReviewForm = () => {
 
   const navigate = useNavigate();
 
-  // Get the current user from Redux store
   const user = useAppSelector(getCurrentUser);
 
   const { data: allServices, isFetching } = useGetAllServicesQuery({
@@ -83,11 +83,12 @@ const ReviewForm = () => {
   }
 
   return (
-    <div className="relative w-full  h-full">
+    <div className="relative w-full h-full">
       <h2 className="text-4xl text-white text-center font-bold mb-8 mx-auto flex pt-6 justify-center">
         Share Your Experience With Us
       </h2>
-      <Row className="flex flex-col h-4/5 w-3/5 mx-auto">
+
+      <Row className="flex flex-col h-4/5 w-3/5 mx-auto review-form-container">
         <UseForm onSubmit={onSubmit}>
           <div className="space-y-0 text-white flex flex-col font-semibold">
             <UseSelect
@@ -135,20 +136,21 @@ const ReviewForm = () => {
             </div>
           </div>
         </UseForm>
-      </Row>
 
-      {!user && (
-        <div className="absolute inset-0 bg-black bg-opacity-70 z-10 flex justify-center items-center">
-          <Button
-            type="primary"
-            size="large"
-            style={{ backgroundColor: "#f43f5e", color: "white" }}
-            onClick={() => navigate("/login", { state: { from: "/review" } })}
-          >
-            Login to Post Review
-          </Button>
-        </div>
-      )}
+        {/* Login Overlay */}
+        {!user && (
+          <div className="absolute inset-0 bg-black bg-opacity-70 z-10 flex justify-center items-center rounded-lg">
+            <Button
+              type="primary"
+              size="large"
+              style={{ backgroundColor: "#f43f5e", color: "white" }}
+              onClick={() => navigate("/login", { state: { from: "/review" } })}
+            >
+              Login to Post Review
+            </Button>
+          </div>
+        )}
+      </Row>
     </div>
   );
 };

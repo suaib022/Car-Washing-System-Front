@@ -113,7 +113,7 @@ const SignUp = () => {
         </h2>
         <div className="flex flex-col  h-4/5 w-2/3 mx-auto">
           <UseForm onSubmit={onSubmit}>
-            <div className="space-y-8  flex flex-col font-semibold">
+            <div className=" flex flex-col font-semibold">
               <FormInput
                 className=""
                 required={true}
@@ -146,6 +146,7 @@ const SignUp = () => {
                 label="Address :"
               ></FormInput>
               <Upload className="text-white" {...uploadProps}>
+                <h2 className="text-sm text-start text-white">Image :</h2>
                 <Button
                   style={{
                     backgroundColor: "#e11d48",
@@ -164,6 +165,7 @@ const SignUp = () => {
               {imageRequiredError && (
                 <small style={{ color: "red" }}>Image is required !</small>
               )}
+              <div className="mb-4"></div>
               <Button
                 style={{
                   backgroundColor: "red",

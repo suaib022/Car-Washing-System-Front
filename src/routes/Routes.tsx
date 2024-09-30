@@ -17,6 +17,8 @@ import MyBookings from "../pages/Dashboard/MyBookings";
 import BookingManagement from "../pages/Admin/BookingManagement";
 import Review from "../pages/Review/Review";
 import BookService from "../pages/Booking/BookService";
+import ProtectedRoute from "../components/layout/ProtectedRoute";
+import NonUserRoute from "../components/layout/NonUserRoute";
 
 const router = createBrowserRouter([
   {
@@ -45,43 +47,83 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: "my-profile",
-            element: <MyProfile />,
+            element: (
+              <ProtectedRoute>
+                <MyProfile />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "my-bookings",
-            element: <MyBookings />,
+            element: (
+              <ProtectedRoute role="user">
+                <MyBookings />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "userManagement",
-            element: <UserManagement />,
+            element: (
+              <ProtectedRoute role="admin">
+                <UserManagement />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "serviceManagement",
-            element: <ServiceManagement />,
+            element: (
+              <ProtectedRoute role="admin">
+                <ServiceManagement />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "trashManagement",
-            element: <TrashManagement />,
+            element: (
+              <ProtectedRoute role="admin">
+                <TrashManagement />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "booking-management",
-            element: <BookingManagement />,
+            element: (
+              <ProtectedRoute role="admin">
+                <BookingManagement />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "slotManagement",
-            element: <SlotManagement />,
+            element: (
+              <ProtectedRoute role="admin">
+                <SlotManagement />
+              </ProtectedRoute>
+            ),
             children: [
               {
                 path: "manageSlots",
-                element: <Slots />,
+                element: (
+                  <ProtectedRoute role="admin">
+                    <Slots />
+                  </ProtectedRoute>
+                ),
               },
               {
                 path: "addSlot",
-                element: <AddSlot />,
+                element: (
+                  <ProtectedRoute role="admin">
+                    <AddSlot />
+                  </ProtectedRoute>
+                ),
               },
             ],
           },
@@ -91,11 +133,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <NonUserRoute>
+        <Login />
+      </NonUserRoute>
+    ),
   },
   {
     path: "/signUp",
-    element: <SignUp />,
+    element: (
+      <NonUserRoute>
+        <SignUp />
+      </NonUserRoute>
+    ),
   },
 ]);
 

@@ -1,4 +1,3 @@
-import React from "react";
 import OrderSummary from "../../components/Booking/OrderSummary";
 import { useParams } from "react-router-dom";
 import { useGetSingleSlotQuery } from "../../redux/features/slots/slotApi";
@@ -17,7 +16,7 @@ const BookService = () => {
 
   return (
     <div>
-      <div className="md:flex items-center md:gap-4 mx-4">
+      <div className="md:flex items-center md:gap-4 my-8 mx-4">
         <OrderSummary selectedSlot={selectedSlot} />
         <OrderForm selectedSlot={selectedSlot} />
       </div>

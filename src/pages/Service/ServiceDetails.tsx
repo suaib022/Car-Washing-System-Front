@@ -3,17 +3,23 @@ import { RxCrossCircled } from "react-icons/rx";
 import { FaCheckCircle } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import errorImg from "../../assets/images/Result/error-404.png";
-import { Flex, Spin, Table } from "antd";
+import { Flex, Pagination, Spin, Table } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 import { useGetSingleServiceQuery } from "../../redux/features/service/serviceApi";
 import { Button } from "../../components/ui/button";
 import { useGetAllSlotsQuery } from "../../redux/features/slots/slotApi";
 import BookService from "../../components/modal/user/BookService";
-import { useState } from "react";
-import type { DatePickerProps, TableColumnsType, TableProps } from "antd";
+import { useEffect, useState } from "react";
+import type {
+  DatePickerProps,
+  PaginationProps,
+  TableColumnsType,
+  TableProps,
+} from "antd";
 import { DatePicker, Space } from "antd";
 import moment from "moment";
+import dayjs, { Dayjs } from "dayjs";
 type TableRowSelection<T> = TableProps<T>["rowSelection"];
 
 interface DataType {
@@ -27,6 +33,15 @@ const ProductDetails = () => {
   const [selectedItems, setSelectedItems] = useState<DataType[]>([]);
   const { serviceId } = useParams<{ serviceId: string }>();
   const [date, selectDate] = useState(moment().format("YYYY-MM-DD"));
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [numberOfProducts, setNumberOfProducts] = useState(500);
+  const [limitOptions, setLimitOptions] = useState([
+    { value: 10, label: "10" },
+    { value: 20, label: "20" },
+    { value: 50, label: "50" },
+    { value: 100, label: "100" },
+  ]);
 
   const navigate = useNavigate();
 
@@ -46,19 +61,56 @@ const ProductDetails = () => {
     limit: 50000,
   });
 
-  const { data: selectedDatesAvailableSlots, isSelectedDatesSlotsFetching } =
-    useGetAllSlotsQuery({
-      service: serviceId,
-      isBooked: "available",
-      limit: 50000,
-      date: date,
-    });
+  const {
+    data: selectedDatesAvailableSlotsWithoutLimit,
+    isFetching: isSelectedDatesAvailableSlotsFetching,
+  } = useGetAllSlotsQuery({
+    service: serviceId,
+    isBooked: "available",
+    limit: 50000,
+  });
+
+  const {
+    data: selectedDatesAvailableSlots,
+    isFetching: isSelectedDatesSlotsFetching,
+  } = useGetAllSlotsQuery({
+    service: serviceId,
+    isBooked: "available",
+    limit: limit,
+    date: date,
+    page: page,
+  });
 
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     selectDate(dateString as string);
   };
 
+  const disablePastDates: DatePickerProps["disabledDate"] = (current) => {
+    return current && current.isBefore(dayjs().startOf("day"));
+  };
+
   // console.log({ service, availableSlots });
+
+  // handle numberOfProducts state for pagination
+  useEffect(() => {
+    if (selectedDatesAvailableSlotsWithoutLimit?.data) {
+      setNumberOfProducts(selectedDatesAvailableSlotsWithoutLimit.data.length);
+    }
+  }, [selectedDatesAvailableSlotsWithoutLimit]);
+
+  // handle page and limit for pagination
+  const onChangePagination: PaginationProps["onChange"] = (
+    pageNumber,
+    pageSize
+  ) => {
+    setPage(pageNumber);
+    setLimit(pageSize);
+  };
+
+  const onShowSizeChange = (_current: number, size: number) => {
+    setLimit(size);
+    setPage(1);
+  };
 
   if (isLoading) {
     return (
@@ -182,7 +234,10 @@ const ProductDetails = () => {
                 )}
               </h2>
               <Space direction="vertical">
-                <DatePicker onChange={onChange} />
+                <DatePicker
+                  onChange={onChange}
+                  disabledDate={disablePastDates}
+                />
               </Space>
             </div>
             <div>
@@ -200,7 +255,11 @@ const ProductDetails = () => {
                   rowSelection={rowSelection}
                   columns={columns}
                   dataSource={slotData}
-                  loading={isFetching || isSelectedDatesSlotsFetching}
+                  loading={
+                    isFetching ||
+                    isSelectedDatesSlotsFetching ||
+                    isSelectedDatesAvailableSlotsFetching
+                  }
                 />
               )}
 
@@ -214,6 +273,20 @@ const ProductDetails = () => {
               >
                 Book This Service
               </Button>
+
+              <div className="mt-6 bg-teal-950 shadow-xl rounded-md pb-4 pt-4 ">
+                <Pagination
+                  style={{ color: "white" }}
+                  showQuickJumper
+                  current={page}
+                  pageSize={limit}
+                  total={numberOfProducts}
+                  onChange={onChangePagination}
+                  showSizeChanger
+                  onShowSizeChange={onShowSizeChange}
+                  pageSizeOptions={[5, 10, 20, 50, 100]}
+                />
+              </div>
             </div>
           </div>
         </div>

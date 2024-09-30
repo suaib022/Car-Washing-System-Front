@@ -64,24 +64,28 @@ const Navbar = () => {
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           </label>
-          <button
-            onClick={() => navigate("/dashboard")}
-            className=" max-w-24 text-white flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
-          >
-            Dashboard
-          </button>
+          {user && (
+            <button
+              onClick={() => navigate("/dashboard")}
+              className=" max-w-24 text-white flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
+            >
+              Dashboard
+            </button>
+          )}
           <button
             onClick={() => navigate("/services")}
             className=" max-w-24 text-white flex-grow btn hover:shadow-sm bg-inherit border-none h-12"
           >
             Services
           </button>
-          <button
-            onClick={() => navigate("/services")}
-            className="bg-transparent max-w-24 text-white flex-grow btn border-0 hover:shadow-sm h-12"
-          >
-            Bookings
-          </button>
+          {user && (
+            <button
+              onClick={() => navigate("/dashboard/my-bookings")}
+              className="bg-transparent max-w-24 text-white flex-grow btn border-0 hover:shadow-sm h-12"
+            >
+              Bookings
+            </button>
+          )}
           {!user ? (
             <button
               onClick={() => navigate("/login")}

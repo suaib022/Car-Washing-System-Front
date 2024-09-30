@@ -5,6 +5,13 @@ import FormInput from "../form/Input";
 import UseSelect from "../form/Select";
 import moment from "moment";
 import { Button, Input } from "antd";
+import { useAppSelector } from "../../redux/hooks";
+import { getCurrentUser } from "../../redux/features/auth/authSlice";
+import { useGetSingleUserQuery } from "../../redux/features/auth/authApi";
+import {
+  useAddBookingMutation,
+  usePayBookingMutation,
+} from "../../redux/features/booking/bookingApi";
 
 const vehicleTypesOptions = [
   { value: "car", label: "Car" },
@@ -22,7 +29,16 @@ const vehicleTypesOptions = [
 const OrderForm = ({ selectedSlot }) => {
   const [selectedVehicleType, setSelectedVehicleType] = useState("");
 
-  console.log({ selectedSlot });
+  const user = useAppSelector(getCurrentUser);
+  const { data: singleUser, isFetching } = useGetSingleUserQuery(
+    user?.userEmail,
+    {
+      skip: !user?.userEmail,
+    }
+  );
+
+  const [addBooking, { isSuccess: isBookingSucceed }] = useAddBookingMutation();
+  const [payBooking] = usePayBookingMutation();
 
   const selectedTimeSlot = selectedSlot?.data
     ? `${moment(selectedSlot.data.date).format("DD MMM YYYY")}, From ${moment(
@@ -35,10 +51,42 @@ const OrderForm = ({ selectedSlot }) => {
     : "No slot selected";
 
   const onSubmit = async (data: FieldValues) => {
-    console.log({ data });
+    const { vehicleModel, vehicleBrand, manufacturingYear, registrationPlate } =
+      data;
+
+    const bookingData = {
+      // customerId: singleUser?.data?._id,
+      serviceId: selectedSlot?.data?.service?._id,
+      slotId: selectedSlot?.data?._id,
+      vehicleType: selectedVehicleType,
+      vehicleBrand,
+      vehicleModel,
+      manufacturingYear: Number(manufacturingYear),
+      registrationPlate,
+      due: Number(selectedSlot?.data?.service?.price),
+    };
+
+    try {
+      const res = await addBooking(bookingData);
+
+      console.log({ res });
+
+      const res2 = await payBooking(bookingData.slotId);
+      console.log({ res2 });
+      window.location.href = res2.data.data.payment_url;
+      console.log(res2.data.data.payment_url);
+    } catch (err) {
+      console.log({ err });
+    }
+    // console.log({ bookingData });
   };
+
+  if (isFetching) {
+    return;
+  }
+
   return (
-    <div className="w-full md:w-1/2">
+    <div className="w-full md:w-1/2 pt-8 md:pt-0">
       <UseForm onSubmit={onSubmit}>
         <h2 className="font-semibold text-2xl text-center mb-8 text-white ">
           Vehicle Details
@@ -47,7 +95,7 @@ const OrderForm = ({ selectedSlot }) => {
           <UseSelect
             setSelectedOption={setSelectedVehicleType}
             options={vehicleTypesOptions}
-            name="vehicle"
+            name="vehicleType"
             label="Vehicle Type"
           />
 
@@ -88,23 +136,28 @@ const OrderForm = ({ selectedSlot }) => {
           User Details
         </h2>
         <div className="w-3/4 mx-auto">
-          <FormInput
-            required={true}
-            type="text"
-            name="name"
-            label="Name :"
-            className=""
-          ></FormInput>
-
-          <FormInput
-            required={true}
+          <h2 className="text-sm mt-3 font-semibold text-white">
+            Receiver Name :
+          </h2>
+          <Input
+            defaultValue={singleUser?.data?.name}
+            style={{ color: "black", backgroundColor: "white" }}
+            disabled={true}
             type="email"
             name="email"
-            label="Email :"
             className=""
-          ></FormInput>
+          ></Input>
+          <h2 className="text-sm mt-3 font-semibold text-white">Email :</h2>
+          <Input
+            defaultValue={user?.userEmail}
+            style={{ color: "black", backgroundColor: "white" }}
+            disabled={true}
+            type="email"
+            name="email"
+            className=""
+          ></Input>
 
-          <h2 className="text-sm font-semibold text-white">
+          <h2 className="text-sm mt-3 font-semibold text-white">
             Selected Time Slot :
           </h2>
           <Input

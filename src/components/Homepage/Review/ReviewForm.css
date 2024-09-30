@@ -1,0 +1,42 @@
+.review-form-container {
+  animation: fadeIn 0.6s ease-in-out;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  background: transparent;
+}
+
+.review-form-container:hover {
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.review-form-input,
+.review-form-select {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  transition: border-color 0.3s;
+}
+
+.review-form-input:focus,
+.review-form-select:focus {
+  border-color: #28a745;
+  outline: none;
+}
+
+button:hover {
+  background-color: #e11d48 !important;
+}

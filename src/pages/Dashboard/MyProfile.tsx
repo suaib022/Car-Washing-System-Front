@@ -5,7 +5,12 @@ import { useAppSelector } from "../../redux/hooks";
 import { FaUserEdit } from "react-icons/fa";
 
 const MyProfile = () => {
-  const { userEmail } = useAppSelector(getCurrentUser);
+  const User = useAppSelector(getCurrentUser);
+  let userEmail;
+
+  if (User) {
+    userEmail = User?.userEmail;
+  }
 
   const { data: user } = useGetSingleUserQuery(userEmail, { skip: !userEmail });
 
