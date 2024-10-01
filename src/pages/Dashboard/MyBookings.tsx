@@ -2,13 +2,19 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Flex, Pagination, PaginationProps, Spin } from "antd";
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { useGetUsersAllBookingsQuery } from "../../redux/features/booking/bookingApi";
+import {
+  useGetUsersAllBookingsQuery,
+  usePayBookingMutation,
+} from "../../redux/features/booking/bookingApi";
 import CountdownTimer from "../../utils/CountDownTimer";
+import toast from "react-hot-toast";
 
 const MyBookings = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [numberOfSlots, setNumberOfSlots] = useState(500);
+
+  const [payBooking] = usePayBookingMutation();
 
   const { data: allBookings, isFetching } = useGetUsersAllBookingsQuery({
     page,
@@ -34,6 +40,23 @@ const MyBookings = () => {
   const onShowSizeChange = (_current: number, size: number) => {
     setLimit(size);
     setPage(1);
+  };
+
+  const handlePayment = async (slotId: string) => {
+    const toastId = toast.loading("Redirecting to payment page");
+    try {
+      const res = await payBooking(slotId);
+
+      const paymentWindow = window.open(res.data.data.payment_url, "_blank");
+
+      if (paymentWindow) {
+        toast.dismiss(toastId);
+      } else {
+        toast.error("Failed to open the payment page.");
+      }
+    } catch (err) {
+      toast.error("Something went wrong!", { id: toastId, duration: 2200 });
+    }
   };
 
   if (isFetching) {
@@ -64,6 +87,7 @@ const MyBookings = () => {
               <th>Duration (Minute)</th>
               <th>Time Left</th>
               <th>Vehicle</th>
+              <th>Due</th>
             </tr>
           </thead>
           <tbody>
@@ -127,6 +151,24 @@ const MyBookings = () => {
                     >
                       View Details
                     </div>
+                  </div>
+                </td>
+                <td
+                  className={`font-semibold uppercase ${
+                    booking?.due === "paid" && "text-orange-600"
+                  }  `}
+                >
+                  <div className="flex flex-col gap-2">
+                    <button className="uppercase">{booking?.due}</button>
+
+                    <button
+                      onClick={() => handlePayment(booking?.slot?._id)}
+                      className={`${
+                        booking?.due === "paid" && "hidden"
+                      } btn btn-xs w-12 bg-rose-500 text-white border-0`}
+                    >
+                      Pay
+                    </button>
                   </div>
                 </td>
               </tr>

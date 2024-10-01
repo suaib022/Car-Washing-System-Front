@@ -43,7 +43,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/book-service/:slotId",
-        element: <BookService />,
+        element: (
+          <ProtectedRoute role="user">
+            <BookService />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/dashboard",

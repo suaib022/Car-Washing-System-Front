@@ -8,8 +8,8 @@ import {
 import toast from "react-hot-toast";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import CountdownTimer from "../../utils/countDownTimer";
 import { useGetAllBookingsQuery } from "../../redux/features/booking/bookingApi";
+import CountdownTimer from "../../utils/CountDownTimer";
 
 const slotStatusOptions = [
   { label: "Available", value: "available" },
@@ -21,9 +21,9 @@ const BookingManagement = () => {
   const [hideButton, setHideButton] = useState(true);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [numberOfSlots, setNumberOfSlots] = useState(500);
+  const [numberOfBookings, setNumberOfBookings] = useState(500);
 
-  const navigate = useNavigate();
+  const [updateSlotStatus] = useUpdateSlotMutation();
 
   const { data: allBookings, isFetching } = useGetAllBookingsQuery({
     page,
@@ -33,12 +33,10 @@ const BookingManagement = () => {
     limit: 50000,
   });
 
-  const [updateSlotStatus] = useUpdateSlotMutation();
-
   // handle numberOfProducts state for pagination
   useEffect(() => {
     if (allBookingsWithoutLimit?.data) {
-      setNumberOfSlots(allBookingsWithoutLimit.data.length);
+      setNumberOfBookings(allBookingsWithoutLimit.data.length);
     }
   }, [allBookingsWithoutLimit]);
 
@@ -187,7 +185,7 @@ const BookingManagement = () => {
             showQuickJumper
             current={page}
             pageSize={limit}
-            total={numberOfSlots}
+            total={numberOfBookings}
             onChange={onChange}
             showSizeChanger
             onShowSizeChange={onShowSizeChange}

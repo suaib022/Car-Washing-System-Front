@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { LoadingOutlined } from "@ant-design/icons";
-import { Flex, Spin } from "antd";
+import { TbCoinTakaFilled } from "react-icons/tb";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import errorImg from "../../assets/images/Result/error-404.png";
+import { RiTimerLine } from "react-icons/ri";
+
 import {
   Card,
   CardContent,
@@ -13,7 +13,6 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { useGetAllServicesQuery } from "../../redux/features/service/serviceApi";
 
 const MAX_DESCRIPTION_LENGTH = 75;
 const MAX_NAME_LENGTH = 30;
@@ -24,7 +23,7 @@ const ServiceCard = ({ product }: any) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [showFullName, setShowFullName] = useState(false);
 
-  const { name, price, description } = product;
+  const { name, price, description, duration } = product;
 
   // handle truncate name and description
   const toggleDescription = () => {
@@ -59,7 +58,16 @@ const ServiceCard = ({ product }: any) => {
             </span>
           )}
         </CardTitle>
-        <h3 className="text-orange-600 font-semibold">${price}</h3>
+        <div className="flex justify-between">
+          <div className="text-orange-600 flex items-center justify-between font-semibold">
+            <TbCoinTakaFilled className="text-xl" />
+            <p className="ml-1 text-white">{price}</p>
+          </div>
+          <div className="text-blue-600 flex items-center justify-between font-semibold">
+            <RiTimerLine className="text-xl" />
+            <p className="ml-1 text-white">{duration} Min</p>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <img

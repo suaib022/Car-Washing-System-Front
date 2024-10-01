@@ -19,6 +19,8 @@ const ServiceManagement = () => {
 
   const { data: allServices, isFetching } = useGetAllServicesQuery({
     isDeleted: "false",
+    page: page,
+    limit: limit,
   });
   const { data: allServicesWithoutLimit } = useGetAllServicesQuery({
     isDeleted: "false",

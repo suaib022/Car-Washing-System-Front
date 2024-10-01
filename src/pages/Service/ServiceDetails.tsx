@@ -20,6 +20,10 @@ import type {
 import { DatePicker, Space } from "antd";
 import moment from "moment";
 import dayjs, { Dayjs } from "dayjs";
+import { useAppSelector } from "../../redux/hooks";
+import { getCurrentToken } from "../../redux/features/auth/authSlice";
+import { TUser, verifyToken } from "../../utils/verifyToken";
+import { useGetSingleUserQuery } from "../../redux/features/auth/authApi";
 type TableRowSelection<T> = TableProps<T>["rowSelection"];
 
 interface DataType {
@@ -48,6 +52,15 @@ const ProductDetails = () => {
   if (serviceId === undefined) {
     return <div>Error: ID is missing</div>;
   }
+
+  let user: TUser = null;
+  const token = useAppSelector(getCurrentToken);
+  if (token) {
+    user = verifyToken(token as any) as TUser;
+  }
+  const { data: currentUser } = useGetSingleUserQuery(user?.userEmail);
+
+  console.log({ currentUser });
 
   const {
     data: service,
@@ -186,16 +199,16 @@ const ProductDetails = () => {
         </div>
 
         <div className="space-y-3 my-auto sm:w-1/2">
-          <h2 className="text-orange-600 font-semibold text-lg text-start">
-            $ {price}
+          <h2 className="text-4xl font-semibold text-start">{name}</h2>
+          <h2 className="font-semibold text-lg  text-start">
+            Duration : <span className="text-blue-400">{duration} Minutes</span>
           </h2>
-          <h2 className="text-2xl font-semibold text-start">{name}</h2>
-
-          <h2 className="font-semibold text-lg text-start">
-            Duration : <span className="text-blue-500">{duration} Minutes</span>
+          <h2 className="font-semibold text-lg  text-start">
+            Price : <span className="text-orange-500"> {price} BDT</span>
           </h2>
-          <p className="text-lg font-semibold">
-            Description : <span className="italic">{description}</span>
+          <p className="text-lg font-semibold ">
+            Description :{" "}
+            <span className="italic text-gray-400">{description}</span>
           </p>
 
           <h2 className="flex items-center gap-1 text-sm">
@@ -216,79 +229,81 @@ const ProductDetails = () => {
             )}
           </h2>
 
-          <div className="pt-2">
-            <div className="flex w-full justify-between">
-              <h2 className="text-xl text-white font-semibold text-start mb-4">
-                Available Slots{" "}
-                {moment().format("MMM DD YYYY") ===
-                moment(date).format("MMM DD YYYY") ? (
-                  <span>Today</span>
-                ) : (
-                  <span>
-                    On{" "}
-                    <span className="text-blue-500">
-                      {" "}
-                      {moment(date).format("MMM DD YYYY")}
+          {currentUser && currentUser?.data?.role === "user" && (
+            <div className="pt-2">
+              <div className="flex w-full justify-between">
+                <h2 className="text-xl text-white font-semibold text-start mb-4">
+                  Available Slots{" "}
+                  {moment().format("MMM DD YYYY") ===
+                  moment(date).format("MMM DD YYYY") ? (
+                    <span>Today</span>
+                  ) : (
+                    <span>
+                      On{" "}
+                      <span className="text-blue-500">
+                        {" "}
+                        {moment(date).format("MMM DD YYYY")}
+                      </span>
                     </span>
-                  </span>
+                  )}
+                </h2>
+                <Space direction="vertical">
+                  <DatePicker
+                    onChange={onChange}
+                    disabledDate={disablePastDates}
+                  />
+                </Space>
+              </div>
+              <div>
+                {selectedDatesAvailableSlots?.data?.length === 0 ? (
+                  <div className="bg-white  text-black text-center py-6 font-semibold text-lg rounded-md">
+                    <p>
+                      No Slots available on {moment(date).format("MMM DD YYYY")}
+                    </p>
+                  </div>
+                ) : (
+                  <Table
+                    showHeader={false}
+                    pagination={false}
+                    className=" "
+                    rowSelection={rowSelection}
+                    columns={columns}
+                    dataSource={slotData}
+                    loading={
+                      isFetching ||
+                      isSelectedDatesSlotsFetching ||
+                      isSelectedDatesAvailableSlotsFetching
+                    }
+                  />
                 )}
-              </h2>
-              <Space direction="vertical">
-                <DatePicker
-                  onChange={onChange}
-                  disabledDate={disablePastDates}
-                />
-              </Space>
-            </div>
-            <div>
-              {selectedDatesAvailableSlots?.data?.length === 0 ? (
-                <div className="bg-white  text-black text-center py-6 font-semibold text-lg rounded-md">
-                  <p>
-                    No Slots available on {moment(date).format("MMM DD YYYY")}
-                  </p>
-                </div>
-              ) : (
-                <Table
-                  showHeader={false}
-                  pagination={false}
-                  className=" "
-                  rowSelection={rowSelection}
-                  columns={columns}
-                  dataSource={slotData}
-                  loading={
-                    isFetching ||
-                    isSelectedDatesSlotsFetching ||
-                    isSelectedDatesAvailableSlotsFetching
+
+                <Button
+                  onClick={() =>
+                    navigate(`/book-service/${selectedItems[0]._id}`)
                   }
-                />
-              )}
+                  className={`bg-rose-600 text-white hover:text-white max-w-48 mt-4 border-rose-700 hover:bg-rose-700 h-9 ${
+                    selectedItems?.length === 0 && "hidden"
+                  }`}
+                >
+                  Book This Service
+                </Button>
 
-              <Button
-                onClick={() =>
-                  navigate(`/book-service/${selectedItems[0]._id}`)
-                }
-                className={`bg-rose-600 text-white hover:text-white max-w-48 mt-4 border-rose-700 hover:bg-rose-700 h-9 ${
-                  selectedItems?.length === 0 && "hidden"
-                }`}
-              >
-                Book This Service
-              </Button>
-
-              <div className="mt-6 bg-teal-950 shadow-xl rounded-md pb-4 pt-4 ">
-                <Pagination
-                  style={{ color: "white" }}
-                  showQuickJumper
-                  current={page}
-                  pageSize={limit}
-                  total={numberOfProducts}
-                  onChange={onChangePagination}
-                  showSizeChanger
-                  onShowSizeChange={onShowSizeChange}
-                  pageSizeOptions={[5, 10, 20, 50, 100]}
-                />
+                <div className="mt-6 bg-teal-950 shadow-xl rounded-md pb-4 pt-4 ">
+                  <Pagination
+                    style={{ color: "white" }}
+                    showQuickJumper
+                    current={page}
+                    pageSize={limit}
+                    total={numberOfProducts}
+                    onChange={onChangePagination}
+                    showSizeChanger
+                    onShowSizeChange={onShowSizeChange}
+                    pageSizeOptions={[5, 10, 20, 50, 100]}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

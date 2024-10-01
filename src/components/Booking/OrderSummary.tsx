@@ -12,9 +12,9 @@ const OrderSummary = ({ selectedSlot }) => {
       <h2 className="text-blue-500 font-semibold text-2xl mt-4 flex w-3/4 mx-auto">
         {selectedSlot?.data?.service?.name}
       </h2>
-      <h2 className="text-white font-semibold text-lg mt-2 flex w-3/4 mx-auto">
+      <h2 className="text-gray-400 font-semibold text-lg mt-2 flex w-3/4 mx-auto">
         Time Interval :{" "}
-        <span className="italic text-rose-500">
+        <span className="text-rose-500">
           {" "}
           {moment(selectedSlot?.data?.date).format("DD MMM YYYY")}, From{" "}
           {moment(selectedSlot?.data?.startTime, "HH:mm").format("h:mm A")} To{" "}

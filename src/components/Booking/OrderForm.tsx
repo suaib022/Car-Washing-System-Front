@@ -12,6 +12,7 @@ import {
   useAddBookingMutation,
   usePayBookingMutation,
 } from "../../redux/features/booking/bookingApi";
+import toast from "react-hot-toast";
 
 const vehicleTypesOptions = [
   { value: "car", label: "Car" },
@@ -37,7 +38,7 @@ const OrderForm = ({ selectedSlot }) => {
     }
   );
 
-  const [addBooking, { isSuccess: isBookingSucceed }] = useAddBookingMutation();
+  const [addBooking] = useAddBookingMutation();
   const [payBooking] = usePayBookingMutation();
 
   const selectedTimeSlot = selectedSlot?.data
@@ -51,11 +52,11 @@ const OrderForm = ({ selectedSlot }) => {
     : "No slot selected";
 
   const onSubmit = async (data: FieldValues) => {
+    const toastId = toast.loading("Booking in process");
     const { vehicleModel, vehicleBrand, manufacturingYear, registrationPlate } =
       data;
 
     const bookingData = {
-      // customerId: singleUser?.data?._id,
       serviceId: selectedSlot?.data?.service?._id,
       slotId: selectedSlot?.data?._id,
       vehicleType: selectedVehicleType,
@@ -67,18 +68,24 @@ const OrderForm = ({ selectedSlot }) => {
     };
 
     try {
-      const res = await addBooking(bookingData);
+      await addBooking(bookingData);
+      toast.success("Booking Successful", { duration: 2500, id: toastId });
 
-      console.log({ res });
+      const toastId2 = toast.loading("Redirecting to the payment page");
 
       const res2 = await payBooking(bookingData.slotId);
-      console.log({ res2 });
-      window.location.href = res2.data.data.payment_url;
-      console.log(res2.data.data.payment_url);
+
+      const paymentWindow = window.open(res2.data.data.payment_url, "_blank");
+
+      if (paymentWindow) {
+        toast.dismiss(toastId2);
+      } else {
+        toast.error("Failed to open the payment page.");
+      }
     } catch (err) {
+      toast.dismiss(toastId);
       console.log({ err });
     }
-    // console.log({ bookingData });
   };
 
   if (isFetching) {

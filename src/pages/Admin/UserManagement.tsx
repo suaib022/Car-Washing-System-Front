@@ -2,14 +2,21 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { useGetAllUsersQuery } from "../../redux/features/auth/authApi";
 import { Flex, Pagination, PaginationProps, Spin } from "antd";
 import { useEffect, useState } from "react";
+import ViewUsersBookings from "../../components/modal/admin/ViewUsersBookings";
 
 const UserManagement = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [numberOfUsers, setNumberOfUsers] = useState(500);
 
-  const { data: allUsers, isFetching } = useGetAllUsersQuery(undefined);
-  const { data: allUsersWithoutLimit } = useGetAllUsersQuery({ limit: 50000 });
+  const { data: allUsers, isFetching } = useGetAllUsersQuery({
+    page: page,
+    limit: limit,
+  });
+  const {
+    data: allUsersWithoutLimit,
+    isFetching: isAllUsersWithoutLimitFetching,
+  } = useGetAllUsersQuery({ limit: 50000 });
 
   // handle numberOfProducts state for pagination
   useEffect(() => {
@@ -29,7 +36,7 @@ const UserManagement = () => {
     setPage(1);
   };
 
-  if (isFetching) {
+  if (isFetching || isAllUsersWithoutLimitFetching) {
     return (
       <Flex align="center" gap="middle">
         <Spin
@@ -41,6 +48,7 @@ const UserManagement = () => {
   }
 
   console.log({ allUsers });
+  console.log({ allUsersWithoutLimit });
   return (
     <div>
       <div className="overflow-x-auto">
@@ -75,28 +83,29 @@ const UserManagement = () => {
                     </div>
                   )}
                 </td>
-                <td
-                  onClick={() =>
-                    document.getElementById(`${user._id}`).showModal()
-                  }
-                  className="underline hover:cursor-pointer font-semibold"
-                >
-                  <dialog id={`${user?._id}`} className="modal">
-                    <div className="modal-box">
-                      <h3 className="font-bold text-lg">Hello!</h3>
-                      <p className="py-4">
-                        Press ESC key or click the button below to close
-                      </p>
-                      <div className="modal-action">
-                        <form method="dialog">
-                          {/* if there is a button in form, it will close the modal */}
-                          <button className="btn">Close</button>
-                        </form>
+                {user?.role === "user" && (
+                  <td
+                    onClick={() =>
+                      document.getElementById(`${user._id}`).showModal()
+                    }
+                    className="underline hover:cursor-pointer font-semibold"
+                  >
+                    <dialog id={`${user?._id}`} className="modal">
+                      <div className="modal-box">
+                        <ViewUsersBookings userId={user?._id} />
+                        <div className="modal-action">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn btn-sm text-white">
+                              Close
+                            </button>
+                          </form>
+                        </div>
                       </div>
-                    </div>
-                  </dialog>
-                  View Bookings
-                </td>
+                    </dialog>
+                    View Bookings
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
