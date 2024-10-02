@@ -60,11 +60,11 @@ const UserManagement = () => {
       const updatedData = { role: UserRole };
       updateUser({ userId, updatedData });
 
-      toast.success("Slots status updated successfully!", { duration: 2200 });
+      toast.success("User's role updated successfully!", { duration: 2200 });
 
       setHideButton(true);
     } catch (error) {
-      console.error("Error updating slot status:", error);
+      console.error("Error updating user's role:", error);
     }
   };
 

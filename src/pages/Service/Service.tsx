@@ -147,7 +147,7 @@ const Product = () => {
   };
 
   return (
-    <div>
+    <div className="mt-6">
       <div className="lg:flex lg:gap-12">
         <div className="lg:w-1/4 hidden lg:block">
           <Filter
@@ -162,11 +162,14 @@ const Product = () => {
           />
         </div>
         <div className="lg:w-3/4">
-          <div className="items-center bg-teal-950 grid sm:grid-cols-2 md:grid-cols-4 md:gap-4 lg:grid-cols-3 grid-cols-1 mb-4 justify-center px-4 py-4 rounded-lg shadow-md space-y-2">
+          <div
+            style={{ width: "97%" }}
+            className="items-center mx-auto bg-transparent border grid sm:grid-cols-2 md:grid-cols-4 md:gap-4 lg:grid-cols-3 grid-cols-1 mb-4 justify-center px-4 py-4 rounded-lg shadow-md space-y-2"
+          >
             <div className=" flex justify-center ">
               <Space direction="vertical">
                 <Search
-                  className="w-full"
+                  className="w-full text-white"
                   placeholder="input search text"
                   allowClear
                   enterButton="Search"
@@ -175,7 +178,7 @@ const Product = () => {
                 />
               </Space>
             </div>
-            <div className="text-md font-semibold flex justify-center gap-5 items-center ">
+            <div className="text-md text-white font-semibold flex justify-center gap-5 items-center ">
               Show
               <Space wrap>
                 <Select
@@ -201,7 +204,7 @@ const Product = () => {
                 showDrawer={showDrawer}
               />
             </div>
-            <div className=" flex justify-center items-center text-md font-semibold gap-2">
+            <div className=" flex justify-center items-center text-md font-semibold gap-2 text-white">
               Sort By
               <Space wrap>
                 <Select
@@ -245,7 +248,10 @@ const Product = () => {
                       ></ServiceCard>
                     ))}
                   </div>
-                  <div className="mt-6  shadow-xl rounded-md px-4 py-4">
+                  <div
+                    style={{ width: "97%" }}
+                    className="my-6 border shadow-xl rounded-md px-4 mx-auto py-4"
+                  >
                     <Pagination
                       showQuickJumper
                       current={page}

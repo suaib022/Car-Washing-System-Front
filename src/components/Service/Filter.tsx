@@ -84,7 +84,7 @@ const Filter = ({
   };
 
   return (
-    <div className="bg-teal-950 shadow-xl text-white rounded-md px-8 py-4">
+    <div className="bg-transparent hover:bg-transparent shadow-xl text-white rounded-md px-8 py-4">
       <div className="justify-end flex ">
         {showClearFilterButton ? (
           <Button onClick={handleClearFilter} className="bg-red-600">
@@ -103,8 +103,8 @@ const Filter = ({
         onValueChange={setAccordionValue}
       >
         <AccordionItem value="item">
-          <AccordionTrigger>
-            <h2 className="text-xl text-white font-semibold mt-12 mb-4">
+          <AccordionTrigger className="!bg-transparent hover:!bg-transparent">
+            <h2 className="text-xl text-white hover:bg-transparent font-semibold mt-12 mb-4">
               Category :
             </h2>
           </AccordionTrigger>

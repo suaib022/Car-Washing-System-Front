@@ -45,7 +45,7 @@ const ServiceCard = ({ product }: any) => {
       : name;
 
   return (
-    <Card className="rounded-2xl bg-teal-950 text-white border-0 shadow-md">
+    <Card className="rounded-2xl bg-transparent border text-white shadow-md">
       <CardHeader className="gap-2">
         <CardTitle>
           {truncateName}

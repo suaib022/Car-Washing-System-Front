@@ -2,7 +2,8 @@ import { Form } from "antd";
 import { Controller } from "react-hook-form";
 
 type TUseSelectProps = {
-  label: string;
+  label?: string;
+  keepLabel?: boolean;
   name: string;
   options: { value: string; label: string; disabled?: boolean }[];
   disabled?: boolean;
@@ -22,6 +23,7 @@ const UseSelect = ({
   requiredError,
   setCategoryRequiredError,
   defaultValue,
+  keepLabel,
 }: TUseSelectProps) => {
   const handleChange = (e: any) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ const UseSelect = ({
       name={name}
       render={({ field, fieldState: { error } }) => (
         <Form.Item>
-          <h2 className="text-white">{label} :</h2>
+          {keepLabel && <h2 className="text-white">{label} :</h2>}
           <select
             defaultValue={defaultValue}
             onChange={handleChange}

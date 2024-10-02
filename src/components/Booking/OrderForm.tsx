@@ -13,6 +13,7 @@ import {
   usePayBookingMutation,
 } from "../../redux/features/booking/bookingApi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const vehicleTypesOptions = [
   { value: "car", label: "Car" },
@@ -29,7 +30,7 @@ const vehicleTypesOptions = [
 
 const OrderForm = ({ selectedSlot }) => {
   const [selectedVehicleType, setSelectedVehicleType] = useState("");
-
+  const navigate = useNavigate();
   const user = useAppSelector(getCurrentUser);
   const { data: singleUser, isFetching } = useGetSingleUserQuery(
     user?.userEmail,
@@ -79,6 +80,7 @@ const OrderForm = ({ selectedSlot }) => {
 
       if (paymentWindow) {
         toast.dismiss(toastId2);
+        navigate("/dashboard/my-bookings");
       } else {
         toast.error("Failed to open the payment page.");
       }

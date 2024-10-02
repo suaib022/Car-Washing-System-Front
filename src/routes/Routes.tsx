@@ -19,6 +19,7 @@ import Review from "../pages/Review/Review";
 import BookService from "../pages/Booking/BookService";
 import ProtectedRoute from "../components/layout/ProtectedRoute";
 import NonUserRoute from "../components/layout/NonUserRoute";
+import CompareService from "../pages/Service/CompareService";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/services",
         element: <Service />,
+      },
+      {
+        path: "/services/:serviceId1/:serviceId2",
+        element: <CompareService />,
       },
       {
         path: "/services/:serviceId",

@@ -72,7 +72,7 @@ const Reviews = () => {
   return (
     <div>
       <h2 className="text-4xl text-white text-center font-bold my-6 mx-auto flex pt-6 justify-center">
-        What our customers say?
+        What Our Customers Say?
       </h2>
       <div className="flex sm:flex-row justify-evenly items-center flex-col mb-12">
         <div className="text-center space-y-4">

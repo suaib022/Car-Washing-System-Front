@@ -41,3 +41,11 @@
 .hovered-card .hover-button {
   opacity: 1;
 }
+
+.review-component {
+  opacity: 0;
+}
+
+.review-component.animate__fadeIn {
+  opacity: 1;
+}

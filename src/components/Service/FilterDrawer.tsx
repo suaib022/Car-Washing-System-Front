@@ -99,7 +99,7 @@ const FilterDrawer = ({
           title="Filter Options"
           onClose={onClose}
           open={open}
-          style={{ backgroundColor: "#042f2e", color: "white" }}
+          style={{ backgroundColor: "#111827", color: "white" }}
         >
           <div className="justify-end flex ">
             {showClearFilterButton ? (
@@ -119,7 +119,7 @@ const FilterDrawer = ({
             onValueChange={setAccordionValue}
           >
             <AccordionItem value="item">
-              <AccordionTrigger>
+              <AccordionTrigger className="!bg-transparent hover:!bg-transparent">
                 <h2 className="text-xl font-semibold mt-12 mb-4">Category :</h2>
               </AccordionTrigger>
               <AccordionContent>

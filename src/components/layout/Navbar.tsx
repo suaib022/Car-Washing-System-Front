@@ -86,6 +86,7 @@ const Navbar = () => {
               Bookings
             </button>
           )}
+
           {!user ? (
             <button
               onClick={() => navigate("/login")}
