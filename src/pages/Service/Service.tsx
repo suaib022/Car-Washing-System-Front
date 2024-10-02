@@ -212,6 +212,8 @@ const Product = () => {
                     { value: "default", label: "Default" },
                     { value: "price", label: "Price (Low > High)" },
                     { value: "-price", label: "Price (High > Low)" },
+                    { value: "duration", label: "Duration (Low > High)" },
+                    { value: "-duration", label: "Duration (High > Low)" },
                   ]}
                 />
               </Space>

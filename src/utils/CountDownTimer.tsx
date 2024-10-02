@@ -20,7 +20,7 @@ function CountdownTimer({ date, time, duration }) {
     const expired = now.isSameOrAfter(expirationDateTime);
 
     if (expired) {
-      return "Completed";
+      return "Expired";
     }
 
     if (serviceInProgress) {
@@ -50,7 +50,7 @@ function CountdownTimer({ date, time, duration }) {
       {typeof timeLeft === "string" ? (
         <p
           className={`${timeLeft === "Ongoing" && "text-green-600"} ${
-            timeLeft === "Completed" && "text-orange-600"
+            timeLeft === "Expired" && "text-rose-600"
           } font-bold`}
         >
           {timeLeft}

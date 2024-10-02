@@ -8,11 +8,17 @@ import {
 } from "../../redux/features/booking/bookingApi";
 import CountdownTimer from "../../utils/CountDownTimer";
 import toast from "react-hot-toast";
+import { Alert } from "antd";
+import Marquee from "react-fast-marquee";
+import GetBookingStatus from "../../utils/GetBookingStatus";
 
 const MyBookings = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [numberOfSlots, setNumberOfSlots] = useState(500);
+  const [shouldShowPayButton, setShouldShowPayButton] = useState<
+    Record<string, boolean>
+  >({});
 
   const [payBooking] = usePayBookingMutation();
 
@@ -59,6 +65,30 @@ const MyBookings = () => {
     }
   };
 
+  // Helper function to check if the current time exceeds 1 hour before the start time
+  const checkNeedToPay = (slotStartTime: string, currentDue: string) => {
+    if (currentDue === "paid") return false;
+    const startTime = moment(slotStartTime, "HH:mm");
+    const currentTime = moment();
+    const oneHourBeforeStartTime = startTime.subtract(1, "hours");
+    return currentTime.isBefore(oneHourBeforeStartTime);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const updatedVisibility: Record<string, boolean> = {}; // Explicitly typing the object
+      allBookings?.data?.forEach((booking) => {
+        updatedVisibility[booking._id] = checkNeedToPay(
+          booking.slot.startTime,
+          booking.due
+        );
+      });
+      setShouldShowPayButton(updatedVisibility);
+    }, 1000); // Check every second
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, [allBookings]);
+
   if (isFetching) {
     return (
       <Flex align="center" gap="middle">
@@ -70,11 +100,21 @@ const MyBookings = () => {
     );
   }
 
-  console.log({ allBookingsWithoutLimit });
-
+  // console.log({ allBookingsWithoutLimit });
+  console.log({ shouldShowPayButton });
   return (
     <div>
       <div className="overflow-x-auto">
+        <Alert
+          style={{ marginBottom: "10px" }}
+          banner
+          message={
+            <Marquee pauseOnHover gradient={false}>
+              If you don't pay your due at least 1 hour before the starting
+              time, your booking will be canceled
+            </Marquee>
+          }
+        />
         <table className="table">
           {/* head */}
           <thead>
@@ -86,6 +126,7 @@ const MyBookings = () => {
               <th>End Time</th>
               <th>Duration (Minute)</th>
               <th>Time Left</th>
+              <th>Status</th>
               <th>Vehicle</th>
               <th>Due</th>
             </tr>
@@ -106,6 +147,15 @@ const MyBookings = () => {
                 <td className="font-semibold">{booking?.service?.duration}</td>
                 <td>
                   <CountdownTimer
+                    date={booking?.slot?.date}
+                    time={booking?.slot?.startTime}
+                    duration={booking?.service?.duration}
+                  />
+                </td>
+                <td>
+                  {" "}
+                  <GetBookingStatus
+                    due={booking?.due}
                     date={booking?.slot?.date}
                     time={booking?.slot?.startTime}
                     duration={booking?.service?.duration}
@@ -153,18 +203,23 @@ const MyBookings = () => {
                     </div>
                   </div>
                 </td>
-                <td
-                  className={`font-semibold uppercase ${
-                    booking?.due === "paid" && "text-orange-600"
-                  }  `}
-                >
+                <td className={`font-semibold uppercase  `}>
                   <div className="flex flex-col gap-2">
-                    <button className="uppercase">{booking?.due}</button>
+                    <h2
+                      className={`uppercase ${
+                        booking?.due === "paid" && "text-orange-600"
+                      } `}
+                    >
+                      {booking?.due}
+                    </h2>
 
+                    {/* Conditionally render the Pay button */}
                     <button
                       onClick={() => handlePayment(booking?.slot?._id)}
                       className={`${
-                        booking?.due === "paid" && "hidden"
+                        (!shouldShowPayButton[booking._id] ||
+                          booking?.due === "paid") &&
+                        "hidden"
                       } btn btn-xs w-12 bg-rose-500 text-white border-0`}
                     >
                       Pay

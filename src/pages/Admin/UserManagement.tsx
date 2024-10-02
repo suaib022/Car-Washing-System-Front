@@ -1,13 +1,26 @@
 import { LoadingOutlined } from "@ant-design/icons";
-import { useGetAllUsersQuery } from "../../redux/features/auth/authApi";
+import {
+  useGetAllUsersQuery,
+  useUpdateUserMutation,
+} from "../../redux/features/auth/authApi";
 import { Flex, Pagination, PaginationProps, Spin } from "antd";
 import { useEffect, useState } from "react";
 import ViewUsersBookings from "../../components/modal/admin/ViewUsersBookings";
+import toast from "react-hot-toast";
+
+const userRoleOptions = [
+  { label: "Admin", value: "admin" },
+  { label: "User", value: "user" },
+];
 
 const UserManagement = () => {
+  const [UserRole, setUserRole] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [numberOfUsers, setNumberOfUsers] = useState(500);
+  const [hideButton, setHideButton] = useState(true);
+
+  const [updateUser] = useUpdateUserMutation();
 
   const { data: allUsers, isFetching } = useGetAllUsersQuery({
     page: page,
@@ -34,6 +47,25 @@ const UserManagement = () => {
   const onShowSizeChange = (_current: number, size: number) => {
     setLimit(size);
     setPage(1);
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    setUserRole(e.target.value);
+    setHideButton(false);
+  };
+
+  const handleChangeUserRole = (userId) => {
+    try {
+      const updatedData = { role: UserRole };
+      updateUser({ userId, updatedData });
+
+      toast.success("Slots status updated successfully!", { duration: 2200 });
+
+      setHideButton(true);
+    } catch (error) {
+      console.error("Error updating slot status:", error);
+    }
   };
 
   if (isFetching || isAllUsersWithoutLimitFetching) {
@@ -72,25 +104,69 @@ const UserManagement = () => {
                 <th>{index + 1}</th>
                 <td>{user.name}</td>
                 <td>{user.phone}</td>
-                <td>
-                  {user?.role === "user" ? (
-                    <div className="badge badge-accent font-bold text-xs py-3 text-white uppercase">
-                      {user.role}
+
+                <td className=" hover:cursor-pointer font-semibold">
+                  <dialog id={`${user?._id}`} className="modal">
+                    <div className="modal-box bg-teal-950 text-white">
+                      <h2 className="text-start mb-4"> Change User Role : </h2>
+                      <select
+                        onChange={handleChange}
+                        defaultValue={user?.role}
+                        className="select select-ghost w-full max-w-xs"
+                      >
+                        {userRoleOptions.map((option) => (
+                          <option value={option.value} key={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="modal-action">
+                        <form method="dialog">
+                          <div className="flex gap-6 items-center border-0">
+                            <button
+                              onClick={() => handleChangeUserRole(user?._id)}
+                              className={`btn btn-sm rounded-md bg-blue-600 border-0 btn-error text-white hover:bg-blue-600 ${
+                                hideButton && "hidden"
+                              }`}
+                            >
+                              Change
+                            </button>
+                            <button
+                              onClick={() => setHideButton(true)}
+                              className="btn btn-sm rounded-md bg-red-700 border-0 btn-error text-white"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="badge badge-error font-bold text-xs uppercase text-white py-3">
-                      {user.role}
-                    </div>
-                  )}
+                  </dialog>
+
+                  <div
+                    onClick={() => {
+                      document.getElementById(`${user?._id}`).showModal();
+                    }}
+                  >
+                    {user?.role === "user" ? (
+                      <div className="badge badge-accent font-bold text-xs py-3 text-white uppercase">
+                        {user.role}
+                      </div>
+                    ) : (
+                      <div className="badge badge-error font-bold text-xs uppercase text-white py-3">
+                        {user.role}
+                      </div>
+                    )}
+                  </div>
                 </td>
                 {user?.role === "user" && (
                   <td
                     onClick={() =>
-                      document.getElementById(`${user._id}`).showModal()
+                      document.getElementById(`${user.email}`).showModal()
                     }
                     className="underline hover:cursor-pointer font-semibold"
                   >
-                    <dialog id={`${user?._id}`} className="modal">
+                    <dialog id={`${user?.email}`} className="modal">
                       <div className="modal-box">
                         <ViewUsersBookings userId={user?._id} />
                         <div className="modal-action">

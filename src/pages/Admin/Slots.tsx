@@ -35,10 +35,28 @@ const Slots = () => {
     }
   }, [allSlotsWithoutLimit]);
 
+  // handle numberOfProducts state for pagination
+  useEffect(() => {
+    if (allSlotsWithoutLimit?.data) {
+      setNumberOfSlots(allSlotsWithoutLimit.data.length);
+    }
+  }, [allSlotsWithoutLimit]);
+
   const handleChange = (e) => {
     e.preventDefault();
     setStatus(e.target.value);
     setHideButton(false);
+  };
+
+  // handle page and limit for pagination
+  const onChange: PaginationProps["onChange"] = (pageNumber, pageSize) => {
+    setPage(pageNumber);
+    setLimit(pageSize);
+  };
+
+  const onShowSizeChange = (_current: number, size: number) => {
+    setLimit(size);
+    setPage(1);
   };
 
   const handleChangeSlotStatus = (slotId) => {
@@ -53,17 +71,6 @@ const Slots = () => {
     } catch (error) {
       console.error("Error updating slot status:", error);
     }
-  };
-
-  // handle page and limit for pagination
-  const onChange: PaginationProps["onChange"] = (pageNumber, pageSize) => {
-    setPage(pageNumber);
-    setLimit(pageSize);
-  };
-
-  const onShowSizeChange = (_current: number, size: number) => {
-    setLimit(size);
-    setPage(1);
   };
 
   // console.log({ allSlots });

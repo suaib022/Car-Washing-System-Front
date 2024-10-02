@@ -10,6 +10,7 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { useGetAllBookingsQuery } from "../../redux/features/booking/bookingApi";
 import CountdownTimer from "../../utils/CountDownTimer";
+import GetBookingStatus from "../../utils/GetBookingStatus";
 
 const slotStatusOptions = [
   { label: "Available", value: "available" },
@@ -98,6 +99,7 @@ const BookingManagement = () => {
               <th>End Time</th>
               <th>Duration (Minute)</th>
               <th>Time Left</th>
+              <th>Status</th>
               <th>Vehicle</th>
             </tr>
           </thead>
@@ -117,6 +119,15 @@ const BookingManagement = () => {
                 <td className="font-semibold">{booking?.service?.duration}</td>
                 <td>
                   <CountdownTimer
+                    date={booking?.slot?.date}
+                    time={booking?.slot?.startTime}
+                    duration={booking?.service?.duration}
+                  />
+                </td>
+                <td>
+                  {" "}
+                  <GetBookingStatus
+                    due={booking?.due}
                     date={booking?.slot?.date}
                     time={booking?.slot?.startTime}
                     duration={booking?.service?.duration}
