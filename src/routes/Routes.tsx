@@ -20,6 +20,7 @@ import BookService from "../pages/Booking/BookService";
 import ProtectedRoute from "../components/layout/ProtectedRoute";
 import NonUserRoute from "../components/layout/NonUserRoute";
 import CompareService from "../pages/Service/CompareService";
+import NotFound from "../pages/NotFound/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -155,6 +156,10 @@ const router = createBrowserRouter([
         <SignUp />
       </NonUserRoute>
     ),
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

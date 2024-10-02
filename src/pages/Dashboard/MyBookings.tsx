@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { Alert } from "antd";
 import Marquee from "react-fast-marquee";
 import GetBookingStatus from "../../utils/GetBookingStatus";
+import { RiTimerLine } from "react-icons/ri";
 
 const MyBookings = () => {
   const [page, setPage] = useState(1);
@@ -19,6 +20,8 @@ const MyBookings = () => {
   const [shouldShowPayButton, setShouldShowPayButton] = useState<
     Record<string, boolean>
   >({});
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [nearestBooking, setNearestBooking] = useState(null);
 
   const [payBooking] = usePayBookingMutation();
 
@@ -30,14 +33,52 @@ const MyBookings = () => {
     limit: 50000,
   });
 
-  // handle numberOfProducts state for pagination
+  // Handle numberOfProducts state for pagination
   useEffect(() => {
     if (allBookingsWithoutLimit?.data) {
       setNumberOfSlots(allBookingsWithoutLimit.data.length);
     }
   }, [allBookingsWithoutLimit]);
 
-  // handle page and limit for pagination
+  // Filter bookings to show only those that have not expired
+  useEffect(() => {
+    const now = moment(); // Get the current time
+    const filtered =
+      allBookingsWithoutLimit?.data.filter((booking) => {
+        const bookingEndTime = moment(
+          `${booking.slot.date} ${booking.slot.endTime}`,
+          "YYYY-MM-DD HH:mm"
+        );
+        return bookingEndTime.isAfter(now); // Keep bookings that have not expired
+      }) || [];
+    setFilteredBookings(filtered); // Update the state with filtered bookings
+  }, [allBookingsWithoutLimit]);
+
+  // Find the nearest booking based on the start time
+  useEffect(() => {
+    if (filteredBookings.length > 0) {
+      const now = moment(); // Get the current time
+      const nearest = filteredBookings.reduce(
+        (closest, booking) => {
+          const bookingStartTime = moment(
+            `${booking.slot.date} ${booking.slot.startTime}`,
+            "YYYY-MM-DD HH:mm"
+          );
+          const timeDifference = bookingStartTime.diff(now);
+
+          if (timeDifference > 0 && timeDifference < closest.timeDifference) {
+            return { booking, timeDifference };
+          }
+          return closest;
+        },
+        { booking: null, timeDifference: Infinity }
+      );
+
+      setNearestBooking(nearest.booking);
+    }
+  }, [filteredBookings]);
+
+  // Handle page and limit for pagination
   const onChange: PaginationProps["onChange"] = (pageNumber, pageSize) => {
     setPage(pageNumber);
     setLimit(pageSize);
@@ -52,7 +93,6 @@ const MyBookings = () => {
     const toastId = toast.loading("Redirecting to payment page");
     try {
       const res = await payBooking(slotId);
-
       const paymentWindow = window.open(res.data.data.payment_url, "_blank");
 
       if (paymentWindow) {
@@ -65,30 +105,50 @@ const MyBookings = () => {
     }
   };
 
-  // Helper function to check if the current time exceeds 1 hour before the start time
-  const checkNeedToPay = (slotStartTime: string, currentDue: string) => {
+  const checkNeedToPay = (
+    slotStartTime: string,
+    slotDate: string, // Date from slot.date
+    currentDue: string | number
+  ) => {
     if (currentDue === "paid") return false;
-    const startTime = moment(slotStartTime, "HH:mm");
+
+    // Combine the date and time to create a full datetime string
+    const fullDateTime = `${moment(slotDate).format(
+      "YYYY-MM-DD"
+    )} ${slotStartTime}`;
+
+    // Parse the full date and time
+    const startTime = moment(fullDateTime, "YYYY-MM-DD HH:mm");
     const currentTime = moment();
-    const oneHourBeforeStartTime = startTime.subtract(1, "hours");
+
+    // Calculate one hour before the start time
+    const oneHourBeforeStartTime = startTime.clone().subtract(1, "hours");
+
+    // Check if current time is before one hour before the start time
     return currentTime.isBefore(oneHourBeforeStartTime);
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const updatedVisibility: Record<string, boolean> = {}; // Explicitly typing the object
-      allBookings?.data?.forEach((booking) => {
+      const updatedVisibility: Record<string, boolean> = {};
+
+      filteredBookings.forEach((booking) => {
         updatedVisibility[booking._id] = checkNeedToPay(
-          booking.slot.startTime,
+          booking.slot.startTime, // Time portion (e.g., "01:20")
+          booking.slot.date, // Date portion from booking.slot.date
           booking.due
         );
       });
+
       setShouldShowPayButton(updatedVisibility);
     }, 1000); // Check every second
 
     return () => clearInterval(interval); // Clear interval on component unmount
-  }, [allBookings]);
+  }, [filteredBookings]);
 
+  // console.log({ shouldShowPayButton });
+  // console.log({ filteredBookings });
+  console.log({ nearestBooking });
   if (isFetching) {
     return (
       <Flex align="center" gap="middle">
@@ -100,11 +160,21 @@ const MyBookings = () => {
     );
   }
 
-  // console.log({ allBookingsWithoutLimit });
-  console.log({ shouldShowPayButton });
   return (
     <div>
       <div className="overflow-x-auto">
+        {nearestBooking && (
+          <>
+            <h2 className="text-lg text-center py-2 text-md font-semibold">
+              You nearest booked slot will start in{" "}
+              <CountdownTimer
+                date={nearestBooking?.slot?.date}
+                time={nearestBooking?.slot?.startTime}
+                duration={nearestBooking?.service?.duration}
+              />
+            </h2>
+          </>
+        )}
         <Alert
           style={{ marginBottom: "10px" }}
           banner
@@ -115,6 +185,48 @@ const MyBookings = () => {
             </Marquee>
           }
         />
+        <h2 className="text-black text-3xl font-semibold text-center mb-5 mt-4">
+          Upcoming Bookings
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-6 gap-6">
+          {filteredBookings?.map((booking) => (
+            <div
+              key={booking?._id}
+              className="card card-side bg-white rounded-md shadow-xl"
+            >
+              <figure className="w-1/3">
+                <img
+                  style={{ width: "90%" }}
+                  className=" border-2 my-2 mx-2 rounded-full"
+                  src={
+                    booking?.service?.image ||
+                    `https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp`
+                  }
+                  alt="Movie"
+                />
+              </figure>
+              <div className="card-body w-2/3">
+                <div className="text-blue-600 mb-2 flex items-center justify-between font-semibold">
+                  <RiTimerLine className="text-2xl" />
+                  <p className="ml-1 text-lg text-black">
+                    {booking?.service?.duration} Min
+                  </p>
+                </div>
+                <div className="card-actions justify-start">
+                  <h2 className="text-lg font-bold text-rose-500">
+                    Starts In :{" "}
+                  </h2>
+                  <CountdownTimer
+                    date={booking?.slot?.date}
+                    time={booking?.slot?.startTime}
+                    duration={booking?.service?.duration}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <table className="table">
           {/* head */}
           <thead>
