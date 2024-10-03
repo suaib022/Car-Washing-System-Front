@@ -69,8 +69,10 @@ The application will be available at your terminal provided local url.
 
 ---
 ```
+```
 
 ## Project's Live Link 
 **https://echowash.vercel.app/**
 
+---
 ```
