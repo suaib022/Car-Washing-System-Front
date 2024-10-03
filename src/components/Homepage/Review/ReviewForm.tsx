@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../redux/hooks";
 import { getCurrentUser } from "../../../redux/features/auth/authSlice";
-import "./ReviewForm.css"; // Import custom CSS for animation
+import "./ReviewForm.css";
 
 const ReviewForm = () => {
   const [selectedService, setSelectedService] = useState(null);
@@ -29,7 +29,7 @@ const ReviewForm = () => {
 
   const [addReview] = useAddReviewMutation();
 
-  const serviceOptions = allServices?.data?.map((item) => ({
+  const serviceOptions = allServices?.data?.map((item: any) => ({
     value: item?._id,
     label: item?.name,
   }));
@@ -54,7 +54,7 @@ const ReviewForm = () => {
     };
 
     try {
-      const res = await addReview(reviewData);
+      const res = (await addReview(reviewData)) as any;
       if (res?.error) {
         return toast.error(res?.error?.data?.message, {
           id: toastId,

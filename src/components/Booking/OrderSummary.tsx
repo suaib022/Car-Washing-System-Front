@@ -1,11 +1,10 @@
 import moment from "moment";
-import React from "react";
 
-const OrderSummary = ({ selectedSlot }) => {
+const OrderSummary = ({ selectedSlot }: any) => {
   return (
     <div className="w-full md:w-1/2 border rounded-md py-8">
       <img
-        src="https://i.pinimg.com/236x/0e/22/4c/0e224cd4865bef54aeb1f4cc110b78dd.jpg"
+        src={selectedSlot?.data?.service?.image}
         alt=""
         className="w-1/2 mx-auto max-h-[400px]"
       />

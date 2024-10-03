@@ -8,6 +8,7 @@ import { image_hosting_api } from "../../../Constant/imagebb";
 import UseForm from "../../form/Form";
 import FormInput from "../../form/Input";
 import UseSelect from "../../form/Select";
+import { FieldValues } from "react-hook-form";
 
 const categoryOptions = [
   { value: "ExteriorWash", label: "Exterior Wash" },
@@ -49,7 +50,7 @@ const AddService = () => {
     }
   }, []);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FieldValues) => {
     const toastId = toast.loading("Creating new service...");
     try {
       if (!imageUrl || selectedOption === "") {
@@ -100,7 +101,7 @@ const AddService = () => {
         setImageRequiredError(true);
       }
     },
-    onRemove(file) {
+    onRemove(_file) {
       setImageUrl("");
       setDisableUploadButton(false);
       setImageRequiredError(true);

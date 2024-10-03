@@ -16,7 +16,7 @@ const { Header, Sider, Content } = Layout;
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKey, setSelectedKey] = useState<string | null>(null); // Null for no selection
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   let user;
   const token = useAppSelector(getCurrentToken);
@@ -27,10 +27,9 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Update selected menu item based on the current route
   useEffect(() => {
     if (location.pathname === "/dashboard") {
-      setSelectedKey(null); // No key selected on the main dashboard path
+      setSelectedKey(null);
     } else if (location.pathname.includes("my-profile")) {
       setSelectedKey("1");
     } else if (location.pathname.includes("my-bookings")) {
@@ -136,7 +135,7 @@ const Dashboard = () => {
         <Menu
           theme="dark"
           mode="inline"
-          selectedKeys={selectedKey ? [selectedKey] : []} // Set selected key dynamically
+          selectedKeys={selectedKey ? [selectedKey] : []}
           items={menuItems}
         />
       </Sider>
@@ -146,7 +145,6 @@ const Dashboard = () => {
             padding: 0,
             color: "white",
           }}
-          theme="dark"
           className="flex"
         >
           <Button
@@ -161,8 +159,8 @@ const Dashboard = () => {
               color: "white",
             }}
           />
-          <div className="w-5/6 text-3xl my-auto font-semibold text-center">
-            Admin Dashboard
+          <div className="w-5/6 uppercase text-3xl my-auto font-semibold text-center">
+            {user?.role} Dashboard
           </div>
         </Header>
         <Content

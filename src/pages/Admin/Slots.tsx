@@ -8,6 +8,8 @@ import {
 import toast from "react-hot-toast";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { handleOpenDialog } from "../../utils/Modal";
+import img from "../../assets/images/Result/no-data-found.jpg";
 
 const slotStatusOptions = [
   { label: "Available", value: "available" },
@@ -28,21 +30,21 @@ const Slots = () => {
 
   const [updateSlotStatus] = useUpdateSlotMutation();
 
-  // handle numberOfProducts state for pagination
+  // handle numberOfSlots state for pagination
   useEffect(() => {
     if (allSlotsWithoutLimit?.data) {
       setNumberOfSlots(allSlotsWithoutLimit.data.length);
     }
   }, [allSlotsWithoutLimit]);
 
-  // handle numberOfProducts state for pagination
+  // handle numberOfSlots state for pagination
   useEffect(() => {
     if (allSlotsWithoutLimit?.data) {
       setNumberOfSlots(allSlotsWithoutLimit.data.length);
     }
   }, [allSlotsWithoutLimit]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     e.preventDefault();
     setStatus(e.target.value);
     setHideButton(false);
@@ -59,7 +61,7 @@ const Slots = () => {
     setPage(1);
   };
 
-  const handleChangeSlotStatus = (slotId) => {
+  const handleChangeSlotStatus = (slotId: any) => {
     try {
       console.log({ status });
       const updatedData = { isBooked: status };
@@ -73,8 +75,6 @@ const Slots = () => {
     }
   };
 
-  // console.log({ allSlots });
-  // console.log({ serviceId });
   if (isFetching) {
     return (
       <Flex align="center" gap="middle">
@@ -85,123 +85,135 @@ const Slots = () => {
       </Flex>
     );
   }
+
   return (
     <div>
       <div className="flex justify-end">
         <button
           onClick={() => navigate("/dashboard/slotManagement/addSlot")}
-          className="btn w-1/5 bg-teal-900 hover:bg-teal-950 text-white mb-2"
+          className="btn w-1/5 border-0 bg-teal-900 hover:bg-teal-950 text-white mb-2"
         >
           Create New Slot
         </button>
       </div>
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr className="bg-teal-950 text-center text-white">
-              <th>SL</th>
-              <th>Service Name</th>
-              <th>Duration (Minute)</th>
-              <th>Date</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allSlots?.data?.map((slot, index) => (
-              <tr
-                key={slot?._id}
-                className="hover:bg-teal-950 text-center hover:text-white"
-              >
-                <th>{index + 1 + (page - 1) * limit}</th>
-                <td>{slot?.service?.name}</td>
-                <td>{slot?.service?.duration}</td>
-                <td>{moment(slot?.date).format("DD MMM YYYY")}</td>
-                <td>{slot.startTime}</td>
-                <td>{slot.endTime}</td>
-                <td className=" hover:cursor-pointer font-semibold">
-                  <dialog id={`${slot?._id}`} className="modal">
-                    <div className="modal-box bg-teal-950 text-white">
-                      <h2 className="text-start mb-4">
-                        {" "}
-                        Change Booking Status :{" "}
-                      </h2>
-                      <select
-                        onChange={handleChange}
-                        defaultValue={slot?.isBooked}
-                        className="select select-ghost w-full max-w-xs"
+      {allSlotsWithoutLimit?.data?.length === 0 ? (
+        <img src={img} />
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr className="bg-teal-950 text-center text-white">
+                <th>SL</th>
+                <th>Image</th>
+                <th>Service Name</th>
+                <th>Duration (Minute)</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allSlots?.data?.map((slot: any, index: any) => (
+                <tr
+                  key={slot?._id}
+                  className="hover:bg-teal-950 text-center hover:text-white"
+                >
+                  <th>{index + 1 + (page - 1) * limit}</th>
+                  <td>
+                    <img
+                      className="w-12 h-12 rounded-full"
+                      src={slot?.service?.image}
+                      alt=""
+                    />
+                  </td>
+                  <td>{slot?.service?.name}</td>
+                  <td>{slot?.service?.duration}</td>
+                  <td>{moment(slot?.date).format("DD MMM YYYY")}</td>
+                  <td>{slot.startTime}</td>
+                  <td>{slot.endTime}</td>
+                  <td className=" hover:cursor-pointer font-semibold">
+                    <dialog id={`${slot?._id}`} className="modal">
+                      <div className="modal-box bg-teal-950 text-white">
+                        <h2 className="text-start mb-4">
+                          {" "}
+                          Change Booking Status :{" "}
+                        </h2>
+                        <select
+                          onChange={handleChange}
+                          defaultValue={slot?.isBooked}
+                          className="select select-ghost w-full max-w-xs"
+                        >
+                          {slotStatusOptions.map((option) => (
+                            <option value={option.value} key={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="modal-action">
+                          <form method="dialog">
+                            <div className="flex gap-6 items-center border-0">
+                              <button
+                                onClick={() =>
+                                  handleChangeSlotStatus(slot?._id)
+                                }
+                                className={`btn btn-sm rounded-md bg-blue-600 border-0 btn-error text-white hover:bg-blue-600 ${
+                                  hideButton && "hidden"
+                                }`}
+                              >
+                                Change
+                              </button>
+                              <button
+                                onClick={() => setHideButton(true)}
+                                className="btn btn-sm rounded-md bg-red-700 border-0 btn-error text-white"
+                              >
+                                Close
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                    <div className="flex justify-center items-center">
+                      <div
+                        onClick={() => handleOpenDialog(`${slot?._id}`)}
+                        className={`uppercase ${
+                          slot.isBooked === "canceled" && ""
+                        }  ${slot.isBooked === "booked" && "btn-disabled"} ${
+                          slot.isBooked === "available" && ""
+                        } text-white border-0 btn btn-xs rounded-2xl w-20 px-2`}
+                        style={
+                          slot.isBooked === "booked"
+                            ? { color: "white", backgroundColor: "#fda4af" }
+                            : slot.isBooked === "canceled"
+                            ? { color: "", backgroundColor: "#db2777" }
+                            : slot.isBooked === "available"
+                            ? { color: "", backgroundColor: "#16a34a" }
+                            : {}
+                        }
                       >
-                        {slotStatusOptions.map((option) => (
-                          <option value={option.value} key={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="modal-action">
-                        <form method="dialog">
-                          <div className="flex gap-6 items-center border-0">
-                            <button
-                              onClick={() => handleChangeSlotStatus(slot?._id)}
-                              className={`btn btn-sm rounded-md bg-blue-600 border-0 btn-error text-white hover:bg-blue-600 ${
-                                hideButton && "hidden"
-                              }`}
-                            >
-                              Change
-                            </button>
-                            <button
-                              onClick={() => setHideButton(true)}
-                              className="btn btn-sm rounded-md bg-red-700 border-0 btn-error text-white"
-                            >
-                              Close
-                            </button>
-                          </div>
-                        </form>
+                        {slot?.isBooked}
                       </div>
                     </div>
-                  </dialog>
-                  <div className="flex justify-center items-center">
-                    <div
-                      onClick={() => {
-                        document.getElementById(`${slot._id}`).showModal();
-                      }}
-                      className={`uppercase ${
-                        slot.isBooked === "canceled" && ""
-                      }  ${slot.isBooked === "booked" && "btn-disabled"} ${
-                        slot.isBooked === "available" && ""
-                      } text-white border-0 btn btn-xs rounded-2xl w-20 px-2`}
-                      style={
-                        slot.isBooked === "booked"
-                          ? { color: "white", backgroundColor: "#fda4af" }
-                          : slot.isBooked === "canceled"
-                          ? { color: "", backgroundColor: "#db2777" }
-                          : slot.isBooked === "available"
-                          ? { color: "", backgroundColor: "#16a34a" }
-                          : {}
-                      }
-                    >
-                      {slot?.isBooked}
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-        <div className="mt-6  shadow-xl rounded-md px-4 py-4">
-          <Pagination
-            showQuickJumper
-            current={page}
-            pageSize={limit}
-            total={numberOfSlots}
-            onChange={onChange}
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-          />
+          <div className="mt-6  shadow-xl rounded-md px-4 py-4">
+            <Pagination
+              showQuickJumper
+              current={page}
+              pageSize={limit}
+              total={numberOfSlots}
+              onChange={onChange}
+              showSizeChanger
+              onShowSizeChange={onShowSizeChange}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

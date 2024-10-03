@@ -4,7 +4,7 @@ import { Card } from "antd";
 import "./FeaturedCard.css";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../ui/button";
-import { TbCoinTaka, TbCoinTakaFilled } from "react-icons/tb";
+import { TbCoinTakaFilled } from "react-icons/tb";
 
 const { Meta } = Card;
 
@@ -12,7 +12,7 @@ const FeaturedCard = ({ item }: any) => {
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
 
-  // Helper function to truncate description
+  // function to truncate description
   const truncateText = (text: string, maxLength: number) => {
     if (text.length > maxLength) {
       return text.substring(0, maxLength) + "...";
@@ -29,16 +29,9 @@ const FeaturedCard = ({ item }: any) => {
       <Card
         className={` ${hovered ? "hovered-card " : ""}`}
         hoverable
-        style={{ width: 240, position: "relative", overflow: "hidden" }}
+        style={{ width: 260, position: "relative", overflow: "hidden" }}
         cover={
-          <img
-            className="h-64 card-image"
-            alt={item.name}
-            src={
-              item.image ||
-              "https://i.pinimg.com/236x/14/4c/f1/144cf1a35751e54383762303b55d114c.jpg"
-            }
-          />
+          <img className="h-64 card-image" alt={item.name} src={item.image} />
         }
       >
         <Meta

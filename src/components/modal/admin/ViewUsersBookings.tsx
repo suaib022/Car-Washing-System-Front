@@ -1,13 +1,9 @@
-import React from "react";
 import { useGetAllBookingsQuery } from "../../../redux/features/booking/bookingApi";
 import moment from "moment";
 
-const ViewUsersBookings = ({ userId }) => {
+const ViewUsersBookings = ({ userId }: any) => {
   const { data: usersBookings } = useGetAllBookingsQuery({ customer: userId });
 
-  // console.log({ userId });
-
-  // console.log({ usersBookings });
   return (
     <div>
       <div className="overflow-x-auto">
@@ -24,9 +20,9 @@ const ViewUsersBookings = ({ userId }) => {
               </tr>
             </thead>
             <tbody className="text-white text-center">
-              {usersBookings?.data?.map((booking, index) => (
+              {usersBookings?.data?.map((booking: any, index: any) => (
                 <tr key={booking?._id}>
-                  <th>{index}</th>
+                  <th>{index + 1}</th>
                   <td>{booking?.service?.name}</td>
                   <td className="font-semibold">
                     {moment(booking?.slot?.date).format("DD MMM YYYY")}

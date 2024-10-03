@@ -11,16 +11,22 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import AddService from "../../components/modal/admin/AddService";
 import UpdateService from "../../components/modal/admin/UpdateService";
+import { handleOpenDialog } from "../../utils/Modal";
+import img from "../../assets/images/Result/no-data-found.jpg";
+import { useNavigate } from "react-router-dom";
 
 const ServiceManagement = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [numberOfServices, setNumberOfServices] = useState(500);
 
+  const navigate = useNavigate();
+
   const { data: allServices, isFetching } = useGetAllServicesQuery({
     isDeleted: "false",
     page: page,
     limit: limit,
+    sort: "-createdAt",
   });
   const { data: allServicesWithoutLimit } = useGetAllServicesQuery({
     isDeleted: "false",
@@ -28,7 +34,7 @@ const ServiceManagement = () => {
   });
   const [moveToBin] = useSoftDeleteServiceMutation();
 
-  // handle numberOfProducts state for pagination
+  // handle numberOfServices state for pagination
   useEffect(() => {
     if (allServicesWithoutLimit?.data) {
       setNumberOfServices(allServicesWithoutLimit.data.length);
@@ -73,16 +79,17 @@ const ServiceManagement = () => {
       </Flex>
     );
   }
+
   return (
     <div>
       <div className="flex justify-end">
         <button
-          onClick={() => document.getElementById("my_modal_1").showModal()}
-          className="btn w-1/5 bg-teal-900 hover:bg-teal-950 text-white mb-2"
+          onClick={() => handleOpenDialog("add-service")}
+          className="btn w-1/5 border-0 bg-teal-950 text-white mb-2"
         >
           Add Service
         </button>
-        <dialog id="my_modal_1" className="modal">
+        <dialog id="add-service" className="modal">
           <div className="modal-box bg-teal-950">
             <AddService />
             <div className="modal-action">
@@ -95,77 +102,80 @@ const ServiceManagement = () => {
           </div>
         </dialog>
       </div>
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr className="bg-teal-950 text-white">
-              <th>SL</th>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Duration</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allServices?.data?.map((service, index) => (
-              <tr
-                key={service?._id}
-                className="hover:bg-teal-950 hover:text-white"
-              >
-                <th>{index + 1 + (page - 1) * limit}</th>
-                <td>{service.name}</td>
-                <td>{service.price}</td>
-                <td>{service.duration}</td>
-                <td className="underline hover:cursor-pointer font-semibold">
-                  {/* Update modal */}
-                  <dialog id={`modal_${service?._id}`} className="modal">
-                    <div className="modal-box">
-                      <UpdateService serviceId={service._id} />
-                      <div className="modal-action">
-                        <form method="dialog">
-                          <button className="btn">Close</button>
-                        </form>
-                      </div>
-                    </div>
-                  </dialog>
-                  <div className="flex justify-evenly items-center">
-                    {/* Edit Service */}
-                    <span
-                      onClick={() => {
-                        document
-                          .getElementById(`modal_${service._id}`)
-                          .showModal();
-                      }}
-                    >
-                      <FiEdit className="text-lg text-teal-700" />
-                    </span>
-                    {/* Delete Service */}
-                    <span>
-                      <FaRegTrashAlt
-                        onClick={() => handleDeleteService(service._id)}
-                        className="text-red-600 text-lg"
-                      />
-                    </span>
-                  </div>
-                </td>
+      {allServicesWithoutLimit?.data?.length != 0 ? (
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr className="bg-teal-950 text-white">
+                <th>SL</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Duration</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {allServices?.data?.map((service: any, index: any) => (
+                <tr
+                  key={service?._id}
+                  className="hover:bg-teal-950 hover:text-white"
+                >
+                  <th>{index + 1 + (page - 1) * limit}</th>
+                  <td onClick={() => navigate(`/services/${service?._id}`)}>
+                    <img
+                      className="w-12 h-12 cursor-pointer rounded-full"
+                      src={service?.image}
+                      alt=""
+                    />
+                  </td>
+                  <td>{service.name}</td>
+                  <td>{service.price}</td>
+                  <td>{service.duration}</td>
+                  <td className="underline hover:cursor-pointer font-semibold">
+                    <dialog id={`${service?._id}`} className="modal">
+                      <div className="modal-box">
+                        <UpdateService serviceId={service._id} />
+                        <div className="modal-action">
+                          <form method="dialog">
+                            <button className="btn">Close</button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                    <div className="flex justify-evenly items-center">
+                      <span onClick={() => handleOpenDialog(service._id)}>
+                        <FiEdit className="text-lg text-teal-700" />
+                      </span>
 
-        <div className="mt-6  shadow-xl rounded-md px-4 py-4">
-          <Pagination
-            showQuickJumper
-            current={page}
-            pageSize={limit}
-            total={numberOfServices}
-            onChange={onChange}
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-          />
+                      <span>
+                        <FaRegTrashAlt
+                          onClick={() => handleDeleteService(service._id)}
+                          className="text-red-600 text-lg"
+                        />
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="mt-6  shadow-xl rounded-md px-4 py-4">
+            <Pagination
+              showQuickJumper
+              current={page}
+              pageSize={limit}
+              total={numberOfServices}
+              onChange={onChange}
+              showSizeChanger
+              onShowSizeChange={onShowSizeChange}
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <img src={img} />
+      )}
     </div>
   );
 };

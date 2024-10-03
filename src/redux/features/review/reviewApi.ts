@@ -10,14 +10,7 @@ const reviewApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reviews"],
     }),
-    // getUsersAllBookings: builder.query({
-    //   query: (query) => ({
-    //     url: "/my-bookings",
-    //     method: "GET",
-    //     params: query,
-    //   }),
-    //   providesTags: ["bookings"],
-    // }),
+
     addReview: builder.mutation({
       query: (reviewData) => ({
         url: "/reviews",

@@ -78,7 +78,7 @@ const Navbar = () => {
           >
             Services
           </button>
-          {user && (
+          {user && user?.role === "user" && (
             <button
               onClick={() => navigate("/dashboard/my-bookings")}
               className="bg-transparent max-w-24 text-white flex-grow btn border-0 hover:shadow-sm h-12"

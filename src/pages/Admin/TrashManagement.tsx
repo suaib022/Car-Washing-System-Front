@@ -12,8 +12,6 @@ import toast from "react-hot-toast";
 import UpdateService from "../../components/modal/admin/UpdateService";
 
 const TrashManagement = () => {
-  // const [isRefetched, setIsRefetched] = useState(false);
-
   const { data: allServices, isFetching } = useGetAllServicesQuery({
     isDeleted: "true",
   });
@@ -21,15 +19,7 @@ const TrashManagement = () => {
   const [deletePermanently] = usePermanentDeleteServiceMutation();
   const [restoreService] = useUpdateServiceMutation();
 
-  // useEffect(() => {
-  //   if (isError && !isRefetched) {
-  //     console.log("object");
-  //     refetch();
-  //     setIsRefetched(true);
-  //   }
-  // }, [allServices, isRefetched, refetch]);
-
-  const handleDeleteService = (id) => {
+  const handleDeleteService = (id: any) => {
     Swal.fire({
       title: "Are you sure?",
       text: "The item will be removed permanently from your database",
@@ -40,13 +30,13 @@ const TrashManagement = () => {
       confirmButtonText: "Yes, Delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        const res = deletePermanently(id);
+        deletePermanently(id);
         toast.success("Item has been deleted permanently", { duration: 2000 });
       }
     });
   };
 
-  const handleRestoreService = (id) => {
+  const handleRestoreService = (id: any) => {
     Swal.fire({
       title: "Are you sure?",
       text: "The item will be restored from bin",
@@ -60,7 +50,7 @@ const TrashManagement = () => {
         const updatedData = {
           isDeleted: false,
         };
-        const res = restoreService({ serviceId: id, updatedData });
+        restoreService({ serviceId: id, updatedData });
         toast.success("Item has been restored successfully", {
           duration: 2000,
         });
@@ -68,7 +58,6 @@ const TrashManagement = () => {
     });
   };
 
-  // console.log({ serviceId });
   if (isFetching) {
     return (
       <Flex align="center" gap="middle">
@@ -80,8 +69,6 @@ const TrashManagement = () => {
     );
   }
 
-  console.log({ allServices });
-
   return (
     <div>
       {allServices?.data?.length !== 0 ? (
@@ -91,6 +78,7 @@ const TrashManagement = () => {
             <thead>
               <tr className="bg-teal-950 text-white">
                 <th>SL</th>
+                <th>Image</th>
                 <th>Name</th>
                 <th>Price</th>
                 <th>Duration</th>
@@ -98,12 +86,19 @@ const TrashManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {allServices?.data?.map((service, index) => (
+              {allServices?.data?.map((service: any, index: any) => (
                 <tr
                   key={service?._id}
                   className="hover:bg-teal-950 hover:text-white"
                 >
                   <th>{index + 1}</th>
+                  <th>
+                    <img
+                      className="w-12 h-12 rounded-full"
+                      src={service?.image}
+                      alt=""
+                    />
+                  </th>
                   <td>{service.name}</td>
                   <td>{service.price}</td>
                   <td>{service.duration}</td>

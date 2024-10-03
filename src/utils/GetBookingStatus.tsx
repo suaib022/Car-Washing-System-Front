@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useState, useEffect } from "react";
 
-function GetBookingStatus({ date, time, duration, due }) {
+function GetBookingStatus({ date, time, duration, due }: any) {
   const formattedDate = date.split("T")[0];
   const formattedTime = time;
 

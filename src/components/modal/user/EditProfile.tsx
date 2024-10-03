@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import {
   useGetSingleUserQuery,
-  useSignUpMutation,
   useUpdateUserMutation,
 } from "../../../redux/features/auth/authApi";
 import { useState } from "react";
@@ -16,11 +15,11 @@ import { useAppSelector } from "../../../redux/hooks";
 import { getCurrentUser } from "../../../redux/features/auth/authSlice";
 import { LoadingOutlined } from "@ant-design/icons";
 
-const EditProfile = ({ userId }) => {
+const EditProfile = ({ userId }: any) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [disableUploadButton, setDisableUploadButton] = useState(false);
 
-  const { userEmail } = useAppSelector(getCurrentUser);
+  const { userEmail } = useAppSelector(getCurrentUser) || null;
 
   const { data: user, isFetching } = useGetSingleUserQuery(userEmail, {
     skip: !userEmail,
@@ -48,7 +47,7 @@ const EditProfile = ({ userId }) => {
       const res = await updateProfile({ userId, updatedData }).unwrap();
       console.log({ res });
       toast.success(res.message, { duration: 2500, id: toastId });
-    } catch (err) {
+    } catch (err: any) {
       if (err.status === 400) {
         return toast.error("Duplicate email or phone number", {
           id: toastId,
@@ -81,7 +80,7 @@ const EditProfile = ({ userId }) => {
         toast.success("Image removed");
       }
     },
-    onRemove(file) {
+    onRemove(_file) {
       setImageUrl(null);
       setDisableUploadButton(false);
     },

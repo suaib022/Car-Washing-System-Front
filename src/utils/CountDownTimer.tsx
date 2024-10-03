@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useState, useEffect } from "react";
 
-function CountdownTimer({ date, time, duration }) {
+function CountdownTimer({ date, time, duration }: any) {
   const formattedDate = date.split("T")[0];
   const formattedTime = time;
 

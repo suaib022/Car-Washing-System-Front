@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { LoadingOutlined } from "@ant-design/icons";
-import { Flex, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Input, Space } from "antd";
 import { Select } from "antd";
 import type { PaginationProps } from "antd";
 import { Pagination } from "antd";
-import img from "../../assets/images/Result/no-data-found.png";
+import img from "../../assets/images/Result/no-data-found.jpg";
 import errorImg from "../../assets/images/Result/error-404.png";
 import ServiceCard from "./ServiceCard";
 import Filter from "../../components/Service/Filter";
@@ -25,7 +23,7 @@ const Product = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [numberOfProducts, setNumberOfProducts] = useState(500);
+  const [numberOfServices, setNumberOfServices] = useState(500);
   const [limitOptions, setLimitOptions] = useState([
     { value: 10, label: "10" },
     { value: 20, label: "20" },
@@ -44,18 +42,18 @@ const Product = () => {
     };
   }, [searchTerm]);
 
-  // get all the products in DB
+  // get all the services in DB
   const {
-    data: allProducts,
-    isLoading: isAllProductsLoading,
-    isError: isAllProductsError,
+    data: allServices,
+    isFetching: isAllServicesLoading,
+    isError: isAllServicesError,
   } = useGetAllServicesQuery({ limit: 50000 });
 
-  // get the filtered products
+  // get the filtered services
   const {
-    data: products,
+    data: services,
     isError,
-    isLoading,
+    isFetching,
   } = useGetAllServicesQuery({
     searchTerm: debouncedSearchTerm,
     sort: sortByPrice,
@@ -64,13 +62,11 @@ const Product = () => {
     ...(checkedList?.length > 0 && { category: category }),
   });
 
-  // console.log({ debouncedSearchTerm, sortByPrice, limit });
-
-  // get the filtered products without limit
+  // get the filtered Services without limit
   const {
-    data: productsWithoutLimit,
-    isLoading: isProductsWithOutLimitLoading,
-    isError: isProductsWithOutLimitError,
+    data: servicesWithoutLimit,
+    isFetching: isServicesWithOutLimitLoading,
+    isError: isServicesWithOutLimitError,
   } = useGetAllServicesQuery({
     limit: 50000,
     searchTerm: debouncedSearchTerm,
@@ -78,12 +74,12 @@ const Product = () => {
     ...(checkedList?.length > 0 && { category: category }),
   });
 
-  // handle numberOfProducts state for pagination
+  // handle numberOfServices state for pagination
   useEffect(() => {
-    if (productsWithoutLimit?.data) {
-      setNumberOfProducts(productsWithoutLimit.data.length);
+    if (servicesWithoutLimit?.data) {
+      setNumberOfServices(servicesWithoutLimit.data.length);
     }
-  }, [productsWithoutLimit]);
+  }, [servicesWithoutLimit]);
 
   // handle sorting filter
   useEffect(() => {
@@ -127,14 +123,9 @@ const Product = () => {
     });
   };
 
-  if (isLoading || isAllProductsLoading || isProductsWithOutLimitLoading) {
+  if (isFetching || isAllServicesLoading || isServicesWithOutLimitLoading) {
     return (
-      <Flex align="center" gap="middle">
-        <Spin
-          className="fixed inset-0 flex items-center justify-center"
-          indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-        />
-      </Flex>
+      <span className="loading loading-dots flex my-32 mx-auto loading-lg"></span>
     );
   }
 
@@ -155,7 +146,7 @@ const Product = () => {
             setIsInitialized={setIsInitialized}
             setSortByPrice={setSortByPrice}
             setCategory={setCategory}
-            allProducts={allProducts}
+            allProducts={allServices}
             sortByPrice={sortByPrice}
             checkedList={checkedList}
             setCheckedList={setCheckedList}
@@ -194,7 +185,7 @@ const Product = () => {
                 isInitialized={isInitialized}
                 setIsInitialized={setIsInitialized}
                 setCategory={setCategory}
-                allProducts={allProducts}
+                allProducts={allServices}
                 sortByPrice={sortByPrice}
                 setSortByPrice={setSortByPrice}
                 checkedList={checkedList}
@@ -223,7 +214,7 @@ const Product = () => {
             </div>
           </div>
           {(() => {
-            if (products?.data?.length === 0) {
+            if (services?.data?.length === 0) {
               return (
                 <div>
                   <img src={img} alt="" />
@@ -231,8 +222,8 @@ const Product = () => {
               );
             } else if (
               isError ||
-              isAllProductsError ||
-              isProductsWithOutLimitError
+              isAllServicesError ||
+              isServicesWithOutLimitError
             ) {
               return (
                 <img className="h-[450px] mx-auto" src={errorImg} alt="" />
@@ -241,10 +232,10 @@ const Product = () => {
               return (
                 <div>
                   <div className="grid gap-2 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 px-4 py-4 rounded-lg shadow-lg">
-                    {products.data.map((product: any) => (
+                    {services.data.map((service: any) => (
                       <ServiceCard
-                        product={product}
-                        key={product._id}
+                        service={service}
+                        key={service._id}
                       ></ServiceCard>
                     ))}
                   </div>
@@ -256,7 +247,7 @@ const Product = () => {
                       showQuickJumper
                       current={page}
                       pageSize={limit}
-                      total={numberOfProducts}
+                      total={numberOfServices}
                       onChange={onChange}
                       showSizeChanger
                       onShowSizeChange={onShowSizeChange}

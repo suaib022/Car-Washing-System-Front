@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import UseForm from "../../form/Form";
 import { Button, Row } from "antd";
-import FormInput from "../../form/Input";
 import UseSelect from "../../form/Select";
 import { useGetAllServicesQuery } from "../../../redux/features/service/serviceApi";
 import { useNavigate } from "react-router-dom";
@@ -14,11 +13,11 @@ const Compare = () => {
 
   const { data: allServices } = useGetAllServicesQuery({ limit: 50000 });
 
-  const serviceOptions = allServices?.data?.map((item) => ({
+  const serviceOptions = allServices?.data?.map((item: any) => ({
     value: item._id,
     label: item.name,
   }));
-  const onSubmit = async (data) => {
+  const onSubmit = async () => {
     const service1 = selectedOption1;
     const service2 = selectedOption2;
 
@@ -54,7 +53,7 @@ const Compare = () => {
                   />
                   <Button
                     style={{
-                      backgroundColor: "#e11d48",
+                      backgroundColor: "#f43f5e",
                       color: "white",
                       padding: "10px 20px",
                       borderRadius: "8px",

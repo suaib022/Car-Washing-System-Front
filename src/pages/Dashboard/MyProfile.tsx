@@ -3,6 +3,7 @@ import { useGetSingleUserQuery } from "../../redux/features/auth/authApi";
 import { getCurrentUser } from "../../redux/features/auth/authSlice";
 import { useAppSelector } from "../../redux/hooks";
 import { FaUserEdit } from "react-icons/fa";
+import { handleOpenDialog } from "../../utils/Modal";
 
 const MyProfile = () => {
   const User = useAppSelector(getCurrentUser);
@@ -16,7 +17,7 @@ const MyProfile = () => {
 
   return (
     <div className="bg-teal-950 w-3/4 mx-auto rounded-2xl py-8">
-      <dialog id="my_modal_1" className="modal">
+      <dialog id="edit-profile" className="modal">
         <div className="modal-box bg-teal-950">
           <EditProfile userId={user?.data?._id} />
           <div className="modal-action">
@@ -33,9 +34,7 @@ const MyProfile = () => {
           <h2 className="text-3xl hidden sm:block font-semibold">My Profile</h2>
           <h2>
             <FaUserEdit
-              onClick={() => {
-                document.getElementById(`my_modal_1`).showModal();
-              }}
+              onClick={() => handleOpenDialog("edit-profile")}
               className="text-2xl hover:cursor-pointer"
             />
           </h2>
@@ -67,10 +66,3 @@ const MyProfile = () => {
 };
 
 export default MyProfile;
-
-// name: string;
-// email: string;
-// password: string;
-// phone: string;
-// role: TUserRole;
-// address: string;

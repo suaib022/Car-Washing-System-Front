@@ -12,6 +12,9 @@ import { Alert } from "antd";
 import Marquee from "react-fast-marquee";
 import GetBookingStatus from "../../utils/GetBookingStatus";
 import { RiTimerLine } from "react-icons/ri";
+import { TBooking } from "../../types/booking";
+import { handleOpenDialog } from "../../utils/Modal";
+import img from "../../assets/images/Result/no-data-found.jpg";
 
 const MyBookings = () => {
   const [page, setPage] = useState(1);
@@ -21,7 +24,7 @@ const MyBookings = () => {
     Record<string, boolean>
   >({});
   const [filteredBookings, setFilteredBookings] = useState([]);
-  const [nearestBooking, setNearestBooking] = useState(null);
+  const [nearestBooking, setNearestBooking] = useState<any>(null);
 
   const [payBooking] = usePayBookingMutation();
 
@@ -33,33 +36,32 @@ const MyBookings = () => {
     limit: 50000,
   });
 
-  // Handle numberOfProducts state for pagination
+  // Handle numberOfBookings state for pagination
   useEffect(() => {
     if (allBookingsWithoutLimit?.data) {
       setNumberOfSlots(allBookingsWithoutLimit.data.length);
     }
   }, [allBookingsWithoutLimit]);
 
-  // Filter bookings to show only those that have not expired
   useEffect(() => {
-    const now = moment(); // Get the current time
+    const now = moment();
     const filtered =
-      allBookingsWithoutLimit?.data.filter((booking) => {
+      allBookingsWithoutLimit?.data.filter((booking: TBooking) => {
         const bookingEndTime = moment(
           `${booking.slot.date} ${booking.slot.endTime}`,
           "YYYY-MM-DD HH:mm"
         );
-        return bookingEndTime.isAfter(now); // Keep bookings that have not expired
+        return bookingEndTime.isAfter(now);
       }) || [];
-    setFilteredBookings(filtered); // Update the state with filtered bookings
+    setFilteredBookings(filtered);
   }, [allBookingsWithoutLimit]);
 
   // Find the nearest booking based on the start time
   useEffect(() => {
     if (filteredBookings.length > 0) {
-      const now = moment(); // Get the current time
+      const now = moment();
       const nearest = filteredBookings.reduce(
-        (closest, booking) => {
+        (closest, booking: any) => {
           const bookingStartTime = moment(
             `${booking.slot.date} ${booking.slot.startTime}`,
             "YYYY-MM-DD HH:mm"
@@ -107,7 +109,7 @@ const MyBookings = () => {
 
   const checkNeedToPay = (
     slotStartTime: string,
-    slotDate: string, // Date from slot.date
+    slotDate: string,
     currentDue: string | number
   ) => {
     if (currentDue === "paid") return false;
@@ -132,22 +134,20 @@ const MyBookings = () => {
     const interval = setInterval(() => {
       const updatedVisibility: Record<string, boolean> = {};
 
-      filteredBookings.forEach((booking) => {
+      filteredBookings.forEach((booking: any) => {
         updatedVisibility[booking._id] = checkNeedToPay(
-          booking.slot.startTime, // Time portion (e.g., "01:20")
-          booking.slot.date, // Date portion from booking.slot.date
+          booking.slot.startTime,
+          booking.slot.date,
           booking.due
         );
       });
 
       setShouldShowPayButton(updatedVisibility);
-    }, 1000); // Check every second
+    }, 1000);
 
-    return () => clearInterval(interval); // Clear interval on component unmount
+    return () => clearInterval(interval);
   }, [filteredBookings]);
 
-  // console.log({ shouldShowPayButton });
-  // console.log({ filteredBookings });
   console.log({ nearestBooking });
   if (isFetching) {
     return (
@@ -158,6 +158,10 @@ const MyBookings = () => {
         />
       </Flex>
     );
+  }
+
+  if (allBookingsWithoutLimit?.data?.length === 0) {
+    return <img src={img} />;
   }
 
   return (
@@ -189,7 +193,7 @@ const MyBookings = () => {
           Upcoming Bookings
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-6 gap-6">
-          {filteredBookings?.map((booking) => (
+          {filteredBookings?.map((booking: TBooking) => (
             <div
               key={booking?._id}
               className="card card-side bg-white rounded-md shadow-xl"
@@ -198,10 +202,7 @@ const MyBookings = () => {
                 <img
                   style={{ width: "90%" }}
                   className=" border-2 my-2 mx-2 rounded-full"
-                  src={
-                    booking?.service?.image ||
-                    `https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp`
-                  }
+                  src={booking?.service?.image}
                   alt="Movie"
                 />
               </figure>
@@ -244,7 +245,7 @@ const MyBookings = () => {
             </tr>
           </thead>
           <tbody>
-            {allBookings?.data?.map((booking, index) => (
+            {allBookings?.data?.map((booking: any, index: any) => (
               <tr
                 key={booking?._id}
                 className="hover:bg-teal-950 text-center hover:text-white"
@@ -307,9 +308,7 @@ const MyBookings = () => {
                   <div className="flex justify-center items-center">
                     <div
                       className="underline font-bold text-sm"
-                      onClick={() => {
-                        document.getElementById(`${booking._id}`).showModal();
-                      }}
+                      onClick={() => handleOpenDialog(`${booking?._id}`)}
                     >
                       View Details
                     </div>
@@ -325,7 +324,6 @@ const MyBookings = () => {
                       {booking?.due}
                     </h2>
 
-                    {/* Conditionally render the Pay button */}
                     <button
                       onClick={() => handlePayment(booking?.slot?._id)}
                       className={`${

@@ -40,7 +40,7 @@ const ScrollToTopButton = () => {
         width: "50px",
         height: "50px",
         textAlign: "center",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", //
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
       }}
     >
       <MdVerticalAlignTop className="mx-auto text-3xl" />

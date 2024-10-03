@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode } from "react";
 import {
   FieldValues,
@@ -5,8 +6,6 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 type TFormConfig = {
   defaultValues?: Record<string, any>;

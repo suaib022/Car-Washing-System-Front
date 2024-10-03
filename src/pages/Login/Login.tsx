@@ -14,11 +14,6 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const defaultValues = {
-    email: "3web@programming-hero.com",
-    password: "u3",
-  };
-
   const [login] = useLoginMutation();
 
   const onSubmit = async (data: FieldValues) => {
@@ -40,7 +35,7 @@ const Login = () => {
       dispatch(setUser({ user, token }));
       navigate("/");
       toast.success(message, { id: toastId, duration: 2500 });
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.data.message, { id: toastId, duration: 2500 });
     }
   };
@@ -53,7 +48,7 @@ const Login = () => {
         </h2>
         <Row className="h-4/5 " justify="center" align="middle" style={{}}>
           <div className=" w-3/5">
-            <UseForm onSubmit={onSubmit} defaultValues={defaultValues}>
+            <UseForm onSubmit={onSubmit}>
               <div className="space-y-2  flex flex-col font-semibold">
                 <FormInput
                   required={true}

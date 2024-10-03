@@ -18,12 +18,12 @@ const AddSlot = () => {
 
   const [addSlot] = useAddSlotMutation();
 
-  const serviceOptions = allServices?.data?.map((item) => ({
+  const serviceOptions = allServices?.data?.map((item: any) => ({
     value: item._id,
     label: item.name,
   }));
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     const toastId = toast.loading("Creating new slot...");
     try {
       const { date, startTime, endTime } = data;
@@ -35,7 +35,7 @@ const AddSlot = () => {
         endTime: moment(new Date(endTime)).format("HH:mm"),
       };
 
-      const res = await addSlot(slotData);
+      const res = (await addSlot(slotData)) as any;
       if (res?.error) {
         return toast.error(res.error.data.message, {
           id: toastId,

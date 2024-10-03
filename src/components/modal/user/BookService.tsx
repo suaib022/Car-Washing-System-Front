@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { useGetAllSlotsQuery } from "../../../redux/features/slots/slotApi";
 import UseForm from "../../form/Form";
 import UseSelect from "../../form/Select";
@@ -38,8 +37,6 @@ const BookService = () => {
     return <div>Error: ID is missing</div>;
   }
 
-  // console.log({ selectedSlot, selectedVehicleType });
-
   const { data: availableSlots, refetch } = useGetAllSlotsQuery({
     service: serviceId,
     isBooked: "available",
@@ -53,7 +50,7 @@ const BookService = () => {
 
   const [createBooking] = useAddBookingMutation();
 
-  const slotOptions = availableSlots?.data?.map((item) => ({
+  const slotOptions = availableSlots?.data?.map((item: any) => ({
     value: item._id,
     label: `${moment(item?.date).format("DD MMM YYYY")} From ${moment(
       item?.startTime,
@@ -81,7 +78,7 @@ const BookService = () => {
         registrationPlate,
       };
 
-      const res = await createBooking(bookingData);
+      const res = (await createBooking(bookingData)) as any;
 
       refetch();
 

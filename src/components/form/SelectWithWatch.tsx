@@ -15,7 +15,6 @@ const UseSelectWithWatch = ({
   label,
   name,
   options,
-  disabled,
   mode,
   onValueChange,
 }: TUniSelectProps) => {

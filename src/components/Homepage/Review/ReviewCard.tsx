@@ -3,7 +3,7 @@ import { Rate } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-const ReviewCard = ({ review }) => {
+const ReviewCard = ({ review }: any) => {
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const maxLength = 100;

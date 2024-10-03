@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from "dayjs";
 type TDatePicker = {
   name: string;
   label?: string;
-  control: any;
+  control?: any;
 };
 
 const UseDatePicker = ({ name, label, control }: TDatePicker) => {

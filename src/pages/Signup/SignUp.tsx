@@ -63,7 +63,7 @@ const SignUp = () => {
       }
       toast.success(res.message, { duration: 2500, id: toastId });
       navigate("/login");
-    } catch (err) {
+    } catch (err: any) {
       if (err.status === 400) {
         return toast.error("Duplicate email or phone number", {
           id: toastId,
@@ -97,7 +97,7 @@ const SignUp = () => {
         setImageRequiredError(true);
       }
     },
-    onRemove(file) {
+    onRemove(_file) {
       setImageUrl("");
       setDisableUploadButton(false);
       setImageRequiredError(true);

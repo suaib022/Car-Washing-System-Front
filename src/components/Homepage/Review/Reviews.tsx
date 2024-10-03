@@ -30,7 +30,7 @@ const Reviews = () => {
     });
 
   const statistics: TStatistics = allReviewsWithoutLimit?.data?.reduce(
-    (acc, review) => {
+    (acc: any, review: any) => {
       const rating = parseFloat(review.rating.toFixed(2));
 
       acc.totalReviews += 1;
@@ -136,20 +136,23 @@ const Reviews = () => {
         </div>
       </div>
       <div className=" sm:flex justify-evenly ">
-        {allReviews?.data?.map((review, index) => (
+        {allReviews?.data?.map((review: any) => (
           <div key={review?._id} className="sm:w-1/2 mx-0 sm:mx-4 w-full">
             <ReviewCard review={review} />
           </div>
         ))}
       </div>
-      <div>
-        <Button
-          onClick={() => navigate("/review")}
-          className="flex mx-auto w-1/4 text-white hover:bg-rose-500 text-md font-semibold mb-12 bg-[#f43f5e]"
-        >
-          See More
-        </Button>
-      </div>
+      {allReviewsWithoutLimit?.data?.length > 2 && (
+        <div>
+          <Button
+            onClick={() => navigate("/review")}
+            className="flex mx-auto w-1/4 text-white hover:bg-rose-500 text-md font-semibold mb-12 bg-[#f43f5e]"
+          >
+            See More
+          </Button>
+        </div>
+      )}
+      <div className="mb-6"></div>
     </div>
   );
 };

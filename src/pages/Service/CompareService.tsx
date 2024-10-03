@@ -29,8 +29,12 @@ const CompareService = () => {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Service 1 */}
         <div className="border rounded-lg p-6 shadow-md bg-white">
+          <img
+            src={service1?.data?.image}
+            className="rounded-lg mb-6 h-48 min-w-full"
+            alt=""
+          />
           <h2 className="text-2xl font-semibold mb-4">{service1.data.name}</h2>
           <p className="text-gray-600 mb-2">
             <strong>Category:</strong> {service1.data.category}
@@ -52,8 +56,12 @@ const CompareService = () => {
           </Button>
         </div>
 
-        {/* Service 2 */}
         <div className="border rounded-lg p-6 shadow-md bg-white">
+          <img
+            src={service2?.data?.image}
+            className="rounded-lg mb-6 h-48 min-w-full"
+            alt=""
+          />
           <h2 className="text-2xl font-semibold mb-4">{service2.data.name}</h2>
           <p className="text-gray-600 mb-2">
             <strong>Category:</strong> {service2.data.category}
@@ -97,12 +105,12 @@ const CompareService = () => {
               {service1.data.duration > service2.data.duration ? (
                 <span className="text-green-600">
                   Service 2 is quicker by{" "}
-                  {service1.data.duration - service2.data.duration} hours
+                  {service1.data.duration - service2.data.duration} minutes
                 </span>
               ) : service1.data.duration < service2.data.duration ? (
                 <span className="text-green-600">
                   Service 1 is quicker by{" "}
-                  {service2.data.duration - service1.data.duration} hours
+                  {service2.data.duration - service1.data.duration} minutes
                 </span>
               ) : (
                 <span className="text-blue-600">Same duration</span>

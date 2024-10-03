@@ -34,7 +34,7 @@ const UseSelect = ({
   return (
     <Controller
       name={name}
-      render={({ field, fieldState: { error } }) => (
+      render={({ fieldState: { error } }) => (
         <Form.Item>
           {keepLabel && <h2 className="text-white">{label} :</h2>}
           <select
@@ -43,7 +43,7 @@ const UseSelect = ({
             className="select bg-white select-bordered w-full "
           >
             <option disabled value="x" selected>
-              Select a {label.toLowerCase()}
+              Select a {label!.toLowerCase()}
             </option>
             {options?.map((option, index) => (
               <option key={index} value={option?.value}>

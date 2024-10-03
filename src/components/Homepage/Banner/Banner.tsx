@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import banner from "../../../assets/images/banner/banner.jpg";
 import "./Banner.css";
+import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
   const [showText, setShowText] = useState(false);
   const [showText2, setShowText2] = useState(false);
   const [showButton, setShowButton] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -51,7 +54,7 @@ const Banner = () => {
             Treatment
           </h1>
           <p
-            className={`text-xl text-start hidden sm:block tracking-wide    duration-700 ease-out ${
+            className={`text-xl text-start hidden sm:block tracking-wide duration-700 ease-out ${
               showText2
                 ? "opacity-100 -translate-x-0"
                 : "opacity-0 -translate-x-10"
@@ -64,13 +67,14 @@ const Banner = () => {
         </div>
         <div className="flex flex-col justify-evenly">
           <button
-            className={`btn mt-12 btn-outline hover:text-white hover:bg-[#f43f5e] hover:border-0 ... bg-clip-border w-full border-white  text-white ${
+            onClick={() => navigate("/services")}
+            className={`border py-3.5 px-4 rounded-md btn-outline hover:text-white hover:bg-[#f43f5e] hover:border-0 ... bg-clip-border w-full border-white text-white ${
               showButton
                 ? "opacity-100 -translate-x-0"
                 : "opacity-0 -translate-x-10"
             }`}
           >
-            <span className="font-medium text-lg ">Book A Service</span>
+            <span className="font-medium text-xl">Book A Service</span>
           </button>
         </div>
       </div>

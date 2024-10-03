@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import UseForm from "../form/Form";
 import { FieldValues } from "react-hook-form";
 import FormInput from "../form/Input";
@@ -28,7 +28,7 @@ const vehicleTypesOptions = [
   { value: "tractor", label: "Tractor" },
 ];
 
-const OrderForm = ({ selectedSlot }) => {
+const OrderForm = ({ selectedSlot }: any) => {
   const [selectedVehicleType, setSelectedVehicleType] = useState("");
   const navigate = useNavigate();
   const user = useAppSelector(getCurrentUser);

@@ -29,7 +29,7 @@ const categoryOptions = [
   { value: "LuxuryVehicleDetailing", label: "Luxury Vehicle Detailing" },
 ];
 
-const UpdateService = ({ serviceId }) => {
+const UpdateService = ({ serviceId }: any) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [disableUploadButton, setDisableUploadButton] = useState(false);
@@ -84,7 +84,7 @@ const UpdateService = ({ serviceId }) => {
         toast.success("Image removed");
       }
     },
-    onRemove(file) {
+    onRemove(_file) {
       setImageUrl("");
       setDisableUploadButton(false);
     },

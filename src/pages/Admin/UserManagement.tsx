@@ -7,6 +7,8 @@ import { Flex, Pagination, PaginationProps, Spin } from "antd";
 import { useEffect, useState } from "react";
 import ViewUsersBookings from "../../components/modal/admin/ViewUsersBookings";
 import toast from "react-hot-toast";
+import { handleOpenDialog } from "../../utils/Modal";
+import img from "../../assets/images/Result/no-data-found.jpg";
 
 const userRoleOptions = [
   { label: "Admin", value: "admin" },
@@ -31,7 +33,7 @@ const UserManagement = () => {
     isFetching: isAllUsersWithoutLimitFetching,
   } = useGetAllUsersQuery({ limit: 50000 });
 
-  // handle numberOfProducts state for pagination
+  // handle numberOfUsers state for pagination
   useEffect(() => {
     if (allUsersWithoutLimit?.data) {
       setNumberOfUsers(allUsersWithoutLimit.data.length);
@@ -49,13 +51,13 @@ const UserManagement = () => {
     setPage(1);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     e.preventDefault();
     setUserRole(e.target.value);
     setHideButton(false);
   };
 
-  const handleChangeUserRole = (userId) => {
+  const handleChangeUserRole = (userId: any) => {
     try {
       const updatedData = { role: UserRole };
       updateUser({ userId, updatedData });
@@ -79,16 +81,18 @@ const UserManagement = () => {
     );
   }
 
-  console.log({ allUsers });
-  console.log({ allUsersWithoutLimit });
+  if (allUsersWithoutLimit?.data?.length === 0) {
+    return <img src={img} />;
+  }
+
   return (
     <div>
       <div className="overflow-x-auto">
         <table className="table">
-          {/* head */}
           <thead>
             <tr className="bg-teal-950 text-white">
               <th>SL</th>
+              <th>Image</th>
               <th>Name</th>
               <th>Contact Info</th>
               <th>Role</th>
@@ -96,12 +100,19 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {allUsers?.data?.map((user, index) => (
+            {allUsers?.data?.map((user: any, index: any) => (
               <tr
                 key={user?._id}
                 className="hover:bg-teal-950 hover:text-white"
               >
                 <th>{index + 1}</th>
+                <th>
+                  <img
+                    className="w-12 h-12 rounded-full"
+                    src={user?.image}
+                    alt=""
+                  />
+                </th>
                 <td>{user.name}</td>
                 <td>{user.phone}</td>
 
@@ -143,11 +154,7 @@ const UserManagement = () => {
                     </div>
                   </dialog>
 
-                  <div
-                    onClick={() => {
-                      document.getElementById(`${user?._id}`).showModal();
-                    }}
-                  >
+                  <div onClick={() => handleOpenDialog(`${user?._id}`)}>
                     {user?.role === "user" ? (
                       <div className="badge badge-accent font-bold text-xs py-3 text-white uppercase">
                         {user.role}
@@ -161,12 +168,10 @@ const UserManagement = () => {
                 </td>
                 {user?.role === "user" && (
                   <td
-                    onClick={() =>
-                      document.getElementById(`${user.email}`).showModal()
-                    }
+                    onClick={() => handleOpenDialog(`${user?.email}`)}
                     className="underline hover:cursor-pointer font-semibold"
                   >
-                    <dialog id={`${user?.email}`} className="modal">
+                    <dialog id={user?.email} className="modal">
                       <div className="modal-box">
                         <ViewUsersBookings userId={user?._id} />
                         <div className="modal-action">

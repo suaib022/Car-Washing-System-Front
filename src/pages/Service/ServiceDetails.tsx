@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import errorImg from "../../assets/images/Result/error-404.png";
 import { Flex, Pagination, Spin, Table } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-
 import { useGetSingleServiceQuery } from "../../redux/features/service/serviceApi";
 import { Button } from "../../components/ui/button";
 import { useGetAllSlotsQuery } from "../../redux/features/slots/slotApi";
@@ -19,7 +18,7 @@ import type {
 } from "antd";
 import { DatePicker, Space } from "antd";
 import moment from "moment";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useAppSelector } from "../../redux/hooks";
 import { getCurrentToken } from "../../redux/features/auth/authSlice";
 import { TUser, verifyToken } from "../../utils/verifyToken";
@@ -40,12 +39,6 @@ const ProductDetails = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [numberOfProducts, setNumberOfProducts] = useState(500);
-  const [limitOptions, setLimitOptions] = useState([
-    { value: 10, label: "10" },
-    { value: 20, label: "20" },
-    { value: 50, label: "50" },
-    { value: 100, label: "100" },
-  ]);
 
   const navigate = useNavigate();
 
@@ -59,8 +52,6 @@ const ProductDetails = () => {
     user = verifyToken(token as any) as TUser;
   }
   const { data: currentUser } = useGetSingleUserQuery(user?.userEmail);
-
-  console.log({ currentUser });
 
   const {
     data: service,
@@ -94,7 +85,7 @@ const ProductDetails = () => {
     page: page,
   });
 
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+  const onChange: DatePickerProps["onChange"] = (_date, dateString) => {
     selectDate(dateString as string);
   };
 
@@ -175,10 +166,6 @@ const ProductDetails = () => {
       dataIndex: "slotInterval",
     },
   ];
-
-  // console.log({ selectedItems });
-  // console.log({ date });
-  console.log({ selectedDatesAvailableSlots });
 
   const { name, price, description, duration, image } = service.data;
 

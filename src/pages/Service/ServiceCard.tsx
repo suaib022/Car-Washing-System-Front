@@ -17,13 +17,13 @@ import { Button } from "../../components/ui/button";
 const MAX_DESCRIPTION_LENGTH = 75;
 const MAX_NAME_LENGTH = 30;
 
-const ServiceCard = ({ product }: any) => {
+const ServiceCard = ({ service }: any) => {
   const navigate = useNavigate();
 
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [showFullName, setShowFullName] = useState(false);
 
-  const { name, price, description, duration } = product;
+  const { name, price, description, duration, image } = service;
 
   // handle truncate name and description
   const toggleDescription = () => {
@@ -70,11 +70,7 @@ const ServiceCard = ({ product }: any) => {
         </div>
       </CardHeader>
       <CardContent>
-        <img
-          className="h-[200px] mx-auto"
-          src="https://i.ibb.co/yykqNz3/Stock-Cake-Modern-Treadmill-Design-1724742141.jpg"
-          alt=""
-        />
+        <img className="h-[200px] w-3/4 mx-auto" src={image} alt="" />
       </CardContent>
       <CardFooter className="  ">
         <div className="space-y-4  w-full text-center flex flex-col mx-auto gap-4">
@@ -93,7 +89,7 @@ const ServiceCard = ({ product }: any) => {
           </div>
           <div className=" flex justify-center">
             <Button
-              onClick={() => navigate(`/services/${product?._id}`)}
+              onClick={() => navigate(`/services/${service?._id}`)}
               className="bg-blue-500 w-3/4 hover:bg-blue-600 h-9"
             >
               Details
