@@ -68,11 +68,9 @@ Instructions on how to install, configure, and get the project running locally.
 The application will be available at your terminal provided local url.
 
 ---
-```
-```
 
+```
 ## Project's Live Link 
 **https://echowash.vercel.app/**
 
----
 ```
